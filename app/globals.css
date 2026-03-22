@@ -2,26 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-primary: #0a0a0a;
+  --color-accent: #059669;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base Styles */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Lenis smooth scroll */
+  html.lenis {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
+/* Utility Classes */
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+}
+
+/* Component Styles */
+@layer components {
 }
