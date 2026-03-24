@@ -13,28 +13,6 @@
   * {
     box-sizing: border-box;
   }
-
-  html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Lenis smooth scroll */
-  html.lenis {
-    height: auto;
-  }
-
-  .lenis.lenis-smooth {
-    scroll-behavior: auto;
-  }
-
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
 }
 
 /* Utility Classes */
@@ -43,4 +21,16 @@
 
 /* Component Styles */
 @layer components {
+  .nav-link {
+    @apply font-display uppercase text-white hover:scale-105 hover:text-accent-500;
+  }
+  .nav-contact {
+    @apply border-2 p-3 font-display uppercase text-white hover:scale-105 hover:bg-white hover:text-primary;
+  }
+  .project-cards {
+    perspective: 850px;
+  }
+  .project-cards .card {
+    transform-origin: center bottom;
+  }
 }
