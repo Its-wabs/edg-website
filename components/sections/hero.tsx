@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
-import HeroProjects from './hero-projects'
+import HeroProjects from '../ui/hero-projects'
 import ShowcaseGrid from '../ui/ShowcaseGrid'
 
 gsap.registerPlugin(ScrollTrigger)

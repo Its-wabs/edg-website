@@ -47,7 +47,7 @@ const ProjectsGrid = () => {
         transformPerspective: 1000,
       })
 
-      // 2. Animate them in with a "Springy" flip
+      // 2. Animate them in with a flip
       gsap.to('.grid-item', {
         opacity: 1,
         y: 0,
@@ -84,7 +84,7 @@ const ProjectsGrid = () => {
               key={proj.id}
               className="grid-item group relative aspect-[16/10] overflow-hidden rounded-sm bg-primary-900"
             >
-              {/* Image / Color Overlay */}
+              {/* Image / Color Overlay for now */}
               <div
                 className={`absolute inset-0 ${proj.color} opacity-60 transition-transform duration-1000 ease-out group-hover:scale-105`}
               />

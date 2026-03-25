@@ -11,6 +11,9 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 import Projects from '@/components/sections/projects'
 import ProjectsGrid from '@/components/ui/ProjectsGrid'
+import Services from '@/components/sections/services'
+import ServicesCTA from '@/components/ui/servicesCTA'
+import Testimonials from '@/components/sections/testimonials'
 
 gsap.registerPlugin(ScrollTrigger)
 export default function Home() {
@@ -19,7 +22,10 @@ export default function Home() {
 
   const mainContainer = useRef(null)
   const heroRef = useRef<HTMLDivElement>(null)
+  const serviceCtaRef = useRef<HTMLDivElement>(null)
   const projectsRef = useRef<any>(null)
+  const servicesRef = useRef<any>(null)
+  const testimonialsRef = useRef<any>(null)
   const nextSceneRef = useRef<HTMLDivElement>(null)
 
   const navItemsRef = useRef<HTMLDivElement>(null)
@@ -40,7 +46,7 @@ export default function Home() {
       const projectSection = projectsRef.current.section
       const viewAllBtn = projectsRef.current.button
 
-      // 1. Initial State: Hiding off-screen with the /-\ tilt
+      // 1. Initial State: Hiding off-screen with the tilt
       gsap.set(cards, {
         yPercent: -120,
         rotationX: 60,
@@ -80,8 +86,6 @@ export default function Home() {
           projectsTl.to(
             cards.slice(0, index),
             {
-              // This is the magic: each card gets a deeper Z and higher Y
-              // based on how many cards are currently on top of it.
               z: (i: number) => (index - i) * -40,
               y: (i: number) => (index - i) * -15,
               scale: (i: number) => 1 - (index - i) * 0.03,
@@ -140,6 +144,205 @@ export default function Home() {
           navMorphTl.play()
         },
       })
+
+      // SERVICES SECTION LOGIC
+      const sCards = servicesRef.current.items
+      const sSection = servicesRef.current.section
+      const sTitle = servicesRef.current.title
+
+      // 1. Initial States
+      gsap.set(sTitle, {
+        opacity: 0,
+        y: '32.5vh',
+        scale: 0.8,
+      })
+
+      // ALL cards start hidden at the bottom
+      gsap.set(sCards, { yPercent: 100 })
+
+      sCards.forEach((card: HTMLDivElement) => {
+        const content = card.querySelector('.service-content')
+        gsap.set(content, { y: 0 })
+      })
+
+      const servicesTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sSection,
+          start: 'top top',
+          end: `+=${sCards.length * 100 + 150}%`,
+          pin: true,
+          scrub: 1,
+        },
+      })
+
+      // PHASE 1: Title Reveal in Center
+      servicesTl.to(sTitle, {
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        ease: 'power2.out',
+      })
+
+      // PHASE 2: Title moves to Header + First Card slides in
+
+      servicesTl
+        .to(
+          sTitle,
+          {
+            y: 0,
+            duration: 1.2,
+            ease: 'expo.inOut',
+          },
+          1
+        )
+        .to(
+          sCards[0],
+          {
+            yPercent: 0,
+            duration: 1.2,
+            ease: 'expo.inOut',
+          },
+          1
+        )
+
+      //  PHASE 3: Card Shuffle Logic
+      sCards.forEach((card: HTMLDivElement, i: number) => {
+        if (i === 0) return
+
+        const prevContent = sCards[i - 1].querySelector('.service-content')
+        const currentContent = card.querySelector('.service-content')
+
+        const pos = i + 1.5
+
+        servicesTl
+          .to(
+            card,
+            {
+              yPercent: i * 12,
+              ease: 'power2.inOut',
+            },
+            pos
+          )
+          .to(
+            prevContent,
+            {
+              y: -100,
+              scale: 0.9,
+              opacity: 0.4,
+              ease: 'power2.inOut',
+            },
+            pos
+          )
+          .from(
+            currentContent,
+            {
+              y: 150,
+              opacity: 0,
+              ease: 'power2.out',
+            },
+            pos
+          )
+      })
+
+      // 5. Final Hold
+      servicesTl.to({}, { duration: 1 })
+
+      // CTA SERVICE SECTION
+      if (serviceCtaRef.current) {
+        // The Pin
+        ScrollTrigger.create({
+          trigger: serviceCtaRef.current,
+          start: 'top top',
+          pin: true,
+          pinSpacing: false,
+          end: '+=600',
+        })
+
+        const ctaContainer = serviceCtaRef.current.querySelector('.max-w-4xl')
+
+        if (ctaContainer) {
+          gsap.fromTo(
+            ctaContainer,
+            {
+              opacity: 0,
+              y: 70,
+            },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1.2,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: serviceCtaRef.current,
+                start: 'top 75%',
+                toggleActions: 'play none none reverse',
+              },
+            }
+          )
+        }
+      }
+
+      // TESTIMONIALS SECTION
+
+      if (testimonialsRef.current) {
+        const tSection = testimonialsRef.current.section
+        const tTitle = testimonialsRef.current.title
+        const tLeft = testimonialsRef.current.leftCol
+        const tRight = testimonialsRef.current.rightCol
+
+        // Initial States
+        // Title starts large and invisible
+        gsap.set(tTitle, { opacity: 0 })
+
+        // Both columns start well below the viewport with the right one having a head start
+        gsap.set(tLeft, { y: '150vh' })
+        gsap.set(tRight, { y: '130vh' })
+
+        const testimonialsTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: tSection,
+            start: 'top top',
+            end: '+=500%',
+            pin: true,
+            scrub: 1,
+          },
+        })
+
+        testimonialsTl
+          // PHASE 1: Title Reveal
+          .to(tTitle, {
+            opacity: 1,
+            scale: 1,
+            duration: 2,
+            ease: 'power2.out',
+          })
+          // PHASE 2: Title scales down
+          .to(tTitle, {
+            scale: 0.8,
+            duration: 1,
+            ease: 'power2.inOut',
+          })
+
+          // PHASE 3: The Double Train
+          .to(
+            tLeft,
+            {
+              y: '-150vh',
+              duration: 10,
+              ease: 'none',
+            },
+            'train'
+          )
+          .to(
+            tRight,
+            {
+              y: '-180vh',
+              duration: 10,
+              ease: 'none',
+            },
+            'train'
+          )
+      }
     },
     { scope: mainContainer, dependencies: [preloaderDone] }
   )
@@ -149,26 +352,26 @@ export default function Home() {
     const section = projectsRef.current.section
     const btn = projectsRef.current.button
 
-    // 1. Get the height of the Hero. where the Project Grid will actually begin.
+    //  Get the height of the Hero. where the Project Grid will actually begin.
     const heroHeight = heroRef.current?.offsetHeight || 0
 
     const scatterTl = gsap.timeline({
       onComplete: () => {
-        // 2. Kill the project trigger
+        //  Kill the project trigger
         ScrollTrigger.getAll().forEach((t) => {
           if (t.trigger === section) t.kill()
         })
 
-        // 3. Swap to Grid
+        // Swap to Grid
         setShowGrid(true)
 
-        // 4.  Scroll to the bottom of the Hero instantly.
+        //  Scroll to the bottom of the Hero instantly.
         window.scrollTo({
           top: heroHeight,
           behavior: 'instant',
         })
 
-        // 5. Force a refresh so the Services section knows its new position
+        //  Force a refresh so the Services section knows its new position
         setTimeout(() => {
           ScrollTrigger.refresh(true)
         }, 10)
@@ -220,15 +423,22 @@ export default function Home() {
           </div>
         )}
       </div>
-      <div>
-        <section
-          ref={nextSceneRef}
-          className="flex h-screen w-full items-center justify-center bg-primary-900"
-        >
-          <h2 className="font-display text-display-md uppercase text-white">
-            sevices
-          </h2>
-        </section>
+
+      <Services ref={servicesRef} />
+
+      <div ref={serviceCtaRef} className="relative z-0">
+        <ServicesCTA />
+      </div>
+
+      <Testimonials ref={testimonialsRef} />
+
+      <div
+        ref={nextSceneRef}
+        className="flex h-[100vh] items-center justify-center bg-black"
+      >
+        <h2 className="font-display text-display-xl uppercase text-white">
+          team
+        </h2>
       </div>
     </div>
   )
