@@ -55,6 +55,9 @@ const Hero = () => {
             },
           })
 
+          gsap.set([headlineRef.current, manifestoRef.current], {
+            clearProps: 'fontSize,all',
+          })
           // PHASE 2 : dismiss the carousel
 
           masterTl
@@ -79,13 +82,13 @@ const Hero = () => {
               {
                 y: '60vh',
                 scale: mobileMatch ? 1.2 : 2,
-                x: mobileMatch ? '-27vw' : 0,
+                x: mobileMatch ? '-31vw' : 0,
                 zIndex: 50,
               },
               {
                 y: mobileMatch ? '20vh' : '30vh',
                 scale: mobileMatch ? 1.5 : 2.2,
-                x: mobileMatch ? '-27vw' : 0,
+                x: mobileMatch ? '-31vw' : 0,
                 duration: 3,
                 ease: 'expo.out',
               },
@@ -188,7 +191,7 @@ const Hero = () => {
       <div className="relative z-30 flex flex-col items-center pt-[12vh]">
         <h1
           ref={headlineRef}
-          className="w-full max-w-md text-center font-display text-[2.5rem] uppercase leading-snug text-white md:w-[80vw] md:max-w-none md:text-[4rem] "
+          className="w-full max-w-md text-center font-display !text-[2.5rem] uppercase leading-snug text-white md:w-[80vw] md:max-w-none md:text-[4rem] "
         >
           nous transformons vos idées métier en logiciels{' '}
           <span className="text-accent-500">rentables</span>
@@ -209,7 +212,7 @@ const Hero = () => {
         ref={manifestoRef}
         className="pointer-events-none absolute inset-0 z-40 flex flex-col items-center justify-center px-10 opacity-0"
       >
-        <h2 className="w-full max-w-lg text-center font-display text-[2.3rem] uppercase leading-tight text-white md:max-w-4xl md:text-[3.8rem] ">
+        <h2 className="w-full max-w-lg text-center font-display !text-[2.3rem] uppercase leading-tight text-white md:max-w-4xl md:text-[3.8rem] ">
           Depuis 2016, nous accompagnons les entreprises dans leur{' '}
           <span className="text-accent-500">transformation digitale</span>.
         </h2>

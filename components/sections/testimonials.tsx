@@ -108,7 +108,7 @@ const Testimonials = forwardRef((_, ref) => {
               className="testimonial-item relative flex flex-col gap-2 md:gap-4"
             >
               <div
-                className={`absolute -left-10 bottom-10 aspect-video w-full md:-left-48 md:bottom-24 md:w-[70%] ${testimonial.color} -z-10 opacity-20 blur-2xl md:opacity-40 md:blur-none`}
+                className={`absolute -left-10 bottom-10 aspect-video w-full md:-left-48 md:bottom-24 md:w-[70%] ${testimonial.color} -z-10 opacity-20 blur-lg md:opacity-40 md:blur-none`}
               />
               <h2 className="font-display text-xl uppercase leading-[0.9] text-white md:text-4xl">
                 {testimonial.title}
