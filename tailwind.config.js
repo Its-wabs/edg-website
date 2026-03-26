@@ -46,12 +46,6 @@ module.exports = {
         display: ['var(--font-peace)', 'sans-serif'], // Big headlines
         sans: ['var(--font-mont)', 'sans-serif'], // Body text
       },
-      fontSize: {
-        'display-xl': ['5rem', { lineHeight: '1', letterSpacing: '-0.02em' }],
-        'display-lg': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
-        'display-md': ['3rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
-        'display-sm': ['2.5rem', { lineHeight: '1.2' }],
-      },
     },
   },
   plugins: [],
