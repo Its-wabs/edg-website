@@ -24,23 +24,26 @@ const ShowcaseGrid = forwardRef((_, ref) => {
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-start pt-[15vh] opacity-0"
+      className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-start pt-[10vh] opacity-0 md:pt-[15vh]"
     >
       <h2
         ref={textRef}
-        className="z-50 mb-12 font-display text-[1.5vw] uppercase tracking-[0.5em] text-white opacity-0"
+        className="z-50 mb-8 px-6 text-center font-display text-[4vw] uppercase tracking-[0.3em] text-white opacity-0 md:mb-12 md:text-[1.2vw] md:tracking-[0.5em]"
       >
-        We are EDG your final destination
+        L&apos;Élite du Web. <br className="md:hidden" /> Votre vision, notre
+        code.
       </h2>
 
-      <div className="mt-10 grid h-[140vh] w-[120vw] grid-cols-3 gap-12">
+      {/* - Mobile: 2 columns
+          - Desktop: 3 columns */}
+      <div className="grid w-[120vw] grid-cols-2 gap-4 px-4 md:w-[120vw] md:grid-cols-3 md:gap-12">
         {PROJECTS.map((proj, i) => (
           <div
             key={proj.id}
             ref={(el) => {
               itemsRef.current[i] = el
             }}
-            className={`${proj.color} rounded-sm shadow-2xl will-change-transform`}
+            className={`aspect-video w-full ${proj.color} rounded-sm shadow-2xl will-change-transform`}
           />
         ))}
       </div>

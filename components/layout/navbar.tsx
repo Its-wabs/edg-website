@@ -40,7 +40,7 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
           {/* The menu Icon thats Hidden by default  */}
           <div
             ref={burgerRef}
-            className="absolute right-[5vw] flex scale-0 cursor-pointer flex-col gap-1.5 p-2 opacity-0"
+            className="scale-1 absolute right-[5vw] flex cursor-pointer flex-col gap-1.5 p-2 md:scale-0"
           >
             <div className="h-[3px] w-8 rounded-full bg-white" />
             <div className="h-[3px] w-8 rounded-full bg-white" />

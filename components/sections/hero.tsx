@@ -1,11 +1,12 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 import HeroProjects from '../ui/hero-projects'
 import ShowcaseGrid from '../ui/ShowcaseGrid'
+import HeroProjectsMobile from '../ui/mobile-hero-projects'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -15,130 +16,164 @@ const Hero = () => {
   const projectsRef = useRef<any>(null) // Carousel
   const showcaseRef = useRef<any>(null) // Video Grid
   const manifestoRef = useRef<HTMLDivElement>(null)
+  const mobileProjectRef = useRef<any>(null)
+
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile() // Check on mount
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useGSAP(
     () => {
-      if (!sectionRef.current || !projectsRef.current || !showcaseRef.current)
-        return
+      if (!sectionRef.current || !showcaseRef.current) return
 
-      const masterTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=700%',
-          scrub: 1.5,
-          pin: true,
-        },
-      })
+      let mm = gsap.matchMedia()
 
-      // PHASE 2 : dismiss the carousel
-      masterTl
-        .to(headlineRef.current, { y: '-50vh', opacity: 0, duration: 2 }, 0)
-        .to(
-          projectsRef.current,
-          { opacity: 0, y: '-50vh', filter: 'blur(20px)', duration: 2 },
-          0
-        )
-
-      // PHASE 2: isolated hero project
-      masterTl
-        .to(showcaseRef.current.container, { opacity: 1, duration: 2 }, 1.5)
-        .fromTo(
-          showcaseRef.current.text,
-          { y: '60vh', opacity: 0 },
-          { y: 0, opacity: 1, duration: 2, ease: 'expo.out' },
-          1.5
-        )
-        .fromTo(
-          showcaseRef.current.items[1],
-          {
-            y: '40vh',
-            scale: 3,
-            zIndex: 50,
-          },
-          { y: '15vh', scale: 2.2, duration: 3, ease: 'expo.out' },
-          1.5
-        )
-
-      //  DISMISS Isolation Text
-      masterTl.to(
-        showcaseRef.current.text,
+      mm.add(
         {
-          y: '-30vh',
-          opacity: 0,
-          duration: 1.5,
-          ease: 'power2.in',
+          isDesktop: '(min-width: 768px)',
+          isMobile: '(max-width: 767px)',
         },
-        4
-      )
+        (context) => {
+          const { isMobile: mobileMatch } = context.conditions as any
+          const target = mobileMatch
+            ? mobileProjectRef.current
+            : projectsRef.current
 
-      // SCALE DOWN & BRING GRID
-      masterTl.to(
-        showcaseRef.current.items[1],
-        {
-          y: 0,
-          scale: 1,
-          duration: 3,
-          ease: 'expo.inOut',
-        },
-        5
-      )
+          const masterTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: '+=700%',
+              scrub: 1.5,
+              pin: true,
+              invalidateOnRefresh: true,
+            },
+          })
 
-      const otherItems = showcaseRef.current.items.filter(
-        (_: any, i: number) => i !== 1
-      )
-      masterTl.fromTo(
-        otherItems,
-        { y: '100vh', opacity: 0, scale: 0.8 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          stagger: 0.15,
-          duration: 2.5,
-          ease: 'expo.out',
-        },
-        5.5
-      )
+          // PHASE 2 : dismiss the carousel
 
-      // PHASE 3: MANIFESTO
-      masterTl
-        .to(
-          showcaseRef.current.container,
-          {
-            y: -40,
-            filter: 'blur(40px)',
-            opacity: 0.1,
-            scale: 0.9,
-            duration: 3,
-          },
-          8.5
-        )
-        .fromTo(
-          manifestoRef.current,
-          { y: '50vh', opacity: 0 },
-          { y: 0, opacity: 1, duration: 2, ease: 'expo.out' },
-          9
-        )
+          masterTl
+            .to(headlineRef.current, { y: '-50vh', opacity: 0, duration: 2 }, 0)
+            .to(
+              target,
+              { opacity: 0, y: '-50vh', filter: 'blur(20px)', duration: 2 },
+              0
+            )
 
-      //  PHASE 4: FINAL EXIT
-      masterTl.to(
-        [showcaseRef.current.container, manifestoRef.current],
-        {
-          y: '-100vh',
-          opacity: 0,
-          stagger: 0.1,
-          duration: 2.5,
-          ease: 'expo.in',
-        },
-        12
-      )
+          // PHASE 2: isolated hero project
+          masterTl
+            .to(showcaseRef.current.container, { opacity: 1, duration: 2 }, 1.5)
+            .fromTo(
+              showcaseRef.current.text,
+              { y: mobileMatch ? '40vh' : '60vh', opacity: 0 },
+              { y: 0, opacity: 1, duration: 2, ease: 'expo.out' },
+              1.5
+            )
+            .fromTo(
+              showcaseRef.current.items[1],
+              {
+                y: '60vh',
+                scale: mobileMatch ? 1.2 : 2,
+                x: mobileMatch ? '-27vw' : 0,
+                zIndex: 50,
+              },
+              {
+                y: mobileMatch ? '20vh' : '30vh',
+                scale: mobileMatch ? 1.5 : 2.2,
+                x: mobileMatch ? '-27vw' : 0,
+                duration: 3,
+                ease: 'expo.out',
+              },
+              1.5
+            )
 
-      masterTl.fromTo(
-        '.featured',
-        { y: '100vh', opacity: 0 },
-        { y: 0, opacity: 1, duration: 2, ease: 'expo.out' },
-        14
+          //  DISMISS Isolation Text
+          masterTl.to(
+            showcaseRef.current.text,
+            {
+              y: '-30vh',
+              opacity: 0,
+              duration: 1.5,
+              ease: 'power2.in',
+            },
+            4
+          )
+
+          // SCALE DOWN & BRING GRID
+          masterTl.to(
+            showcaseRef.current.items[1],
+            {
+              y: 0,
+              x: 0,
+              scale: 1,
+              duration: 3,
+              ease: 'expo.inOut',
+            },
+            5
+          )
+
+          const otherItems = showcaseRef.current.items.filter(
+            (_: any, i: number) => i !== 1
+          )
+          masterTl.fromTo(
+            otherItems,
+            { y: '100vh', opacity: 0, scale: 0.8 },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              stagger: 0.15,
+              duration: 2.5,
+              ease: 'expo.out',
+            },
+            5.5
+          )
+
+          // PHASE 3: MANIFESTO
+          masterTl
+            .to(
+              showcaseRef.current.container,
+              {
+                y: -40,
+                filter: 'blur(40px)',
+                opacity: 0.1,
+                scale: 0.9,
+                duration: 3,
+              },
+              8.5
+            )
+            .fromTo(
+              manifestoRef.current,
+              { y: '50vh', opacity: 0 },
+              { y: 0, opacity: 1, duration: 2, ease: 'expo.out' },
+              9
+            )
+
+          //  PHASE 4: FINAL EXIT
+          masterTl.to(
+            [showcaseRef.current.container, manifestoRef.current],
+            {
+              y: '-100vh',
+              opacity: 0,
+              stagger: 0.1,
+              duration: 2.5,
+              ease: 'expo.in',
+            },
+            12
+          )
+
+          masterTl.fromTo(
+            '.featured',
+            { y: '100vh', opacity: 0 },
+            { y: 0, opacity: 1, duration: 2, ease: 'expo.out' },
+            14
+          )
+        }
       )
     },
     { scope: sectionRef }
@@ -153,12 +188,17 @@ const Hero = () => {
       <div className="relative z-30 flex flex-col items-center pt-[12vh]">
         <h1
           ref={headlineRef}
-          className="w-[80vw] text-center font-display text-display-lg uppercase leading-snug text-white"
+          className="w-[80vw] text-center font-display text-display-md uppercase leading-snug text-white md:text-display-lg"
         >
           nous transformons vos idées métier en logiciels{' '}
           <span className="text-accent-500">rentables</span>
         </h1>
-        <HeroProjects ref={projectsRef} />
+        <div className="block w-full md:hidden">
+          <HeroProjectsMobile ref={mobileProjectRef} isActive={isMobile} />
+        </div>
+        <div className="hidden w-full md:block">
+          <HeroProjects ref={projectsRef} isActive={!isMobile} />
+        </div>
       </div>
 
       {/* Layer 2: Showcase Grid */}

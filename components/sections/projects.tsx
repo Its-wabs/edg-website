@@ -15,7 +15,6 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
   const itemsRef = useRef<(HTMLDivElement | null)[]>([])
   const btnRef = useRef<HTMLButtonElement>(null)
 
-  // Expose the internal elements to the parent
   useImperativeHandle(ref, () => ({
     section: sectionRef.current,
     items: itemsRef.current,
@@ -27,14 +26,14 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
       ref={sectionRef}
       className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-primary-950"
     >
-      <div className="relative flex h-[60vh] w-[85vw] items-center justify-center">
+      <div className="relative flex aspect-video w-[90vw] max-w-[1200px] items-center justify-center md:w-[70vw] lg:max-h-[75vh]">
         {PROJECTS.map((proj, i) => (
           <div
             key={proj.id}
             ref={(el) => {
               itemsRef.current[i] = el
             }}
-            className={`absolute h-[65vh] w-[85vw] md:h-[70vh] md:w-[70vw] ${proj.color} flex flex-col justify-end overflow-hidden p-8 will-change-transform md:p-12`}
+            className={`absolute inset-0 ${proj.color} flex flex-col justify-end overflow-hidden p-6 will-change-transform md:p-12`}
           >
             {/* Content */}
             <div className="relative z-10">

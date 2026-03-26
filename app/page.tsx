@@ -42,309 +42,257 @@ export default function Home() {
     () => {
       if (!preloaderDone || !projectsRef.current) return
 
-      const cards = projectsRef.current.items
-      const projectSection = projectsRef.current.section
-      const viewAllBtn = projectsRef.current.button
+      let mm = gsap.matchMedia()
 
-      // 1. Initial State: Hiding off-screen with the tilt
-      gsap.set(cards, {
-        yPercent: -120,
-        rotationX: 60,
-        z: -500,
-        transformPerspective: 1500,
-        transformOrigin: '50% 0%',
-      })
-
-      const projectsTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: projectSection,
-          start: 'top top',
-          end: `+=${cards.length * 150}%`,
-          pin: true,
-          scrub: 1,
-          anticipatePin: 1,
-        },
-      })
-
-      cards.forEach((card: HTMLDivElement, index: number) => {
-        // Phase 1: The current card swoops in to the front
-        projectsTl.to(
-          card,
-          {
-            yPercent: 0,
-            rotationX: 0,
-            z: 0,
-            opacity: 1,
-            ease: 'power2.out',
-            duration: 1,
-          },
-          index * 1.5
-        )
-
-        // Phase 2: ALL previous cards shift back to form the visible stack
-        if (index > 0) {
-          projectsTl.to(
-            cards.slice(0, index),
-            {
-              z: (i: number) => (index - i) * -40,
-              y: (i: number) => (index - i) * -15,
-              scale: (i: number) => 1 - (index - i) * 0.03,
-              brightness: (i: number) => 1 - (index - i) * 0.15,
-              duration: 0.8,
-              ease: 'power2.inOut',
-              overwrite: 'auto',
-            },
-            index * 1.5
-          )
-        }
-      })
-
-      projectsTl.to(
-        viewAllBtn,
+      mm.add(
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power2.out',
+          isDesktop: '(min-width: 768px)',
+          isMobile: '(max-width: 767px)',
         },
-        '+=0.2'
-      )
+        (context) => {
+          const { isDesktop } = context.conditions as any
 
-      const navMorphTl = gsap.timeline({ paused: true })
+          if (projectsRef.current) {
+            const cards = projectsRef.current.items
+            const projectSection = projectsRef.current.section
+            const viewAllBtn = projectsRef.current.button
 
-      navMorphTl
-        .to(navItemsRef.current, {
-          x: 30,
-          opacity: 0,
-          pointerEvents: 'none',
-          duration: 0.4,
-          ease: 'power2.in',
-        })
-        .to(
-          navBurgerRef.current,
-          { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.7)' },
-          '-=0.2'
-        )
+            // 1. Initial State: Hiding off-screen with the tilt
+            gsap.set(cards, {
+              yPercent: isDesktop ? -120 : -200,
+              rotationX: isDesktop ? 60 : 45,
+              z: isDesktop ? -500 : -300,
+              transformPerspective: 1500,
+              transformOrigin: '50% 0%',
+            })
 
-      ScrollTrigger.create({
-        trigger: heroRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        onUpdate: (self) => {
-          if (self.progress > 0.01 && self.progress < 0.99) {
-            navMorphTl.play()
-          } else if (self.progress <= 0.01) {
-            navMorphTl.reverse()
-          }
-        },
-        onLeave: () => {
-          navMorphTl.reverse()
-        },
-        onEnterBack: () => {
-          navMorphTl.play()
-        },
-      })
-
-      // SERVICES SECTION LOGIC
-      const sCards = servicesRef.current.items
-      const sSection = servicesRef.current.section
-      const sTitle = servicesRef.current.title
-
-      // 1. Initial States
-      gsap.set(sTitle, {
-        opacity: 0,
-        y: '32.5vh',
-        scale: 0.8,
-      })
-
-      // ALL cards start hidden at the bottom
-      gsap.set(sCards, { yPercent: 100 })
-
-      sCards.forEach((card: HTMLDivElement) => {
-        const content = card.querySelector('.service-content')
-        gsap.set(content, { y: 0 })
-      })
-
-      const servicesTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sSection,
-          start: 'top top',
-          end: `+=${sCards.length * 100 + 150}%`,
-          pin: true,
-          scrub: 1,
-        },
-      })
-
-      // PHASE 1: Title Reveal in Center
-      servicesTl.to(sTitle, {
-        opacity: 1,
-        scale: 1,
-        duration: 1,
-        ease: 'power2.out',
-      })
-
-      // PHASE 2: Title moves to Header + First Card slides in
-
-      servicesTl
-        .to(
-          sTitle,
-          {
-            y: 0,
-            duration: 1.2,
-            ease: 'expo.inOut',
-          },
-          1
-        )
-        .to(
-          sCards[0],
-          {
-            yPercent: 0,
-            duration: 1.2,
-            ease: 'expo.inOut',
-          },
-          1
-        )
-
-      //  PHASE 3: Card Shuffle Logic
-      sCards.forEach((card: HTMLDivElement, i: number) => {
-        if (i === 0) return
-
-        const prevContent = sCards[i - 1].querySelector('.service-content')
-        const currentContent = card.querySelector('.service-content')
-
-        const pos = i + 1.5
-
-        servicesTl
-          .to(
-            card,
-            {
-              yPercent: i * 12,
-              ease: 'power2.inOut',
-            },
-            pos
-          )
-          .to(
-            prevContent,
-            {
-              y: -100,
-              scale: 0.9,
-              opacity: 0.4,
-              ease: 'power2.inOut',
-            },
-            pos
-          )
-          .from(
-            currentContent,
-            {
-              y: 150,
-              opacity: 0,
-              ease: 'power2.out',
-            },
-            pos
-          )
-      })
-
-      // 5. Final Hold
-      servicesTl.to({}, { duration: 1 })
-
-      // CTA SERVICE SECTION
-      if (serviceCtaRef.current) {
-        // The Pin
-        ScrollTrigger.create({
-          trigger: serviceCtaRef.current,
-          start: 'top top',
-          pin: true,
-          pinSpacing: false,
-          end: '+=600',
-        })
-
-        const ctaContainer = serviceCtaRef.current.querySelector('.max-w-4xl')
-
-        if (ctaContainer) {
-          gsap.fromTo(
-            ctaContainer,
-            {
-              opacity: 0,
-              y: 70,
-            },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 1.2,
-              ease: 'power3.out',
+            const projectsTl = gsap.timeline({
               scrollTrigger: {
-                trigger: serviceCtaRef.current,
-                start: 'top 75%',
-                toggleActions: 'play none none reverse',
+                trigger: projectSection,
+                start: 'top top',
+                end: `+=${cards.length * (isDesktop ? 150 : 120)}%`,
+                pin: true,
+                scrub: 1,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
               },
-            }
-          )
+            })
+
+            cards.forEach((card: HTMLDivElement, index: number) => {
+              // Phase 1: The current card swoops in to the front
+              projectsTl.to(
+                card,
+                {
+                  yPercent: 0,
+                  rotationX: 0,
+                  z: 0,
+                  opacity: 1,
+                  ease: 'power2.out',
+                  duration: 1,
+                },
+                index * 1.5
+              )
+
+              // Phase 2: ALL previous cards shift back to form the visible stack
+              if (index > 0) {
+                projectsTl.to(
+                  cards.slice(0, index),
+                  {
+                    z: (i: number) => (index - i) * (isDesktop ? -40 : -25),
+                    y: (i: number) => (index - i) * (isDesktop ? -15 : -10),
+                    scale: (i: number) => 1 - (index - i) * 0.03,
+                    brightness: (i: number) => 1 - (index - i) * 0.15,
+                    duration: 0.8,
+                    ease: 'power2.inOut',
+                    overwrite: 'auto',
+                  },
+                  index * 1.5
+                )
+              }
+            })
+
+            projectsTl.to(
+              viewAllBtn,
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+              },
+              '+=0.2'
+            )
+          }
+
+          if (isDesktop && heroRef.current) {
+            gsap.set(navBurgerRef.current, { scale: 0, opacity: 0 })
+
+            const navMorphTl = gsap.timeline({ paused: true })
+
+            navMorphTl
+              .to(navItemsRef.current, {
+                x: 30,
+                opacity: 0,
+                pointerEvents: 'none',
+                duration: 0.4,
+                ease: 'power2.in',
+              })
+              .to(
+                navBurgerRef.current,
+                { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.7)' },
+                '-=0.2'
+              )
+
+            ScrollTrigger.create({
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                if (self.progress > 0.01 && self.progress < 0.99) {
+                  navMorphTl.play()
+                } else if (self.progress <= 0.01) {
+                  navMorphTl.reverse()
+                }
+              },
+              onLeave: () => {
+                navMorphTl.reverse()
+              },
+              onEnterBack: () => {
+                navMorphTl.play()
+              },
+            })
+          } else {
+            gsap.set(navBurgerRef.current, { scale: 1, opacity: 1 })
+          }
+
+          // SERVICES SECTION
+          if (servicesRef.current) {
+            const sCards = servicesRef.current.items
+            const sSection = servicesRef.current.section
+            const sTitle = servicesRef.current.title
+
+            // Clear any previous transforms to avoid "stuck" items
+            gsap.set([sTitle, sCards], { clearProps: 'all' })
+
+            gsap.set(sTitle, { opacity: 0, y: '32.5vh', scale: 0.8 })
+            gsap.set(sCards, { yPercent: 100 })
+
+            const servicesTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: sSection,
+                start: 'top top',
+                end: `+=${sCards.length * 100 + 150}%`,
+                pin: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+              },
+            })
+
+            servicesTl
+              .to(sTitle, { opacity: 1, scale: 1, duration: 1 })
+              .to(sTitle, { y: 0, duration: 1.2, ease: 'expo.inOut' }, 1)
+              .to(
+                sCards[0],
+                { yPercent: 0, duration: 1.2, ease: 'expo.inOut' },
+                1
+              )
+
+            sCards.forEach((card: HTMLDivElement, i: number) => {
+              if (i === 0) return
+              const prevContent =
+                sCards[i - 1].querySelector('.service-content')
+              const currentContent = card.querySelector('.service-content')
+              const pos = i + 1.5
+
+              servicesTl
+                .to(
+                  card,
+                  { yPercent: i * (isDesktop ? 10 : 8), ease: 'power2.inOut' },
+                  pos
+                )
+                .to(
+                  prevContent,
+                  { y: -100, scale: 0.9, opacity: 0, ease: 'power2.inOut' },
+                  pos
+                )
+                // Changed .from to .fromTo for better reliability in scrub timelines
+                .fromTo(
+                  currentContent,
+                  { y: 150, opacity: 0 },
+                  { y: 0, opacity: 1, ease: 'power2.out' },
+                  pos
+                )
+            })
+            servicesTl.to({}, { duration: 1 })
+          }
+
+          // TESTIMONIALS SECTION
+
+          if (testimonialsRef.current) {
+            const tSection = testimonialsRef.current.section
+            const tTitle = testimonialsRef.current.title
+            const tLeft = testimonialsRef.current.leftCol
+            const tRight = testimonialsRef.current.rightCol
+
+            // Initial States
+            // Title starts large and invisible
+            gsap.set(tTitle, { opacity: 0 })
+
+            // Both columns start well below the viewport with the right one having a head start
+            gsap.set(tLeft, { y: '150vh' })
+            gsap.set(tRight, { y: '130vh' })
+
+            const testimonialsTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: tSection,
+                start: 'top top',
+                end: '+=500%',
+                pin: true,
+                scrub: 1,
+              },
+            })
+
+            testimonialsTl
+              // PHASE 1: Title Reveal
+              .to(tTitle, {
+                opacity: 1,
+                scale: 1,
+                duration: 2,
+                ease: 'power2.out',
+              })
+              // PHASE 2: Title scales down
+              .to(tTitle, {
+                scale: isDesktop ? 0.8 : 0.6,
+                opacity: isDesktop ? 1 : 0.5,
+                filter: isDesktop ? 'blur(0px)' : 'blur(1px)',
+                duration: 1,
+                ease: 'power2.inOut',
+              })
+
+              // PHASE 3: The Double Train
+              .to(
+                tLeft,
+                {
+                  y: '-150vh',
+                  duration: 10,
+                  ease: 'none',
+                },
+                'train'
+              )
+              .to(
+                tRight,
+                {
+                  y: '-180vh',
+                  duration: 10,
+                  ease: 'none',
+                },
+                'train'
+              )
+          }
         }
-      }
-
-      // TESTIMONIALS SECTION
-
-      if (testimonialsRef.current) {
-        const tSection = testimonialsRef.current.section
-        const tTitle = testimonialsRef.current.title
-        const tLeft = testimonialsRef.current.leftCol
-        const tRight = testimonialsRef.current.rightCol
-
-        // Initial States
-        // Title starts large and invisible
-        gsap.set(tTitle, { opacity: 0 })
-
-        // Both columns start well below the viewport with the right one having a head start
-        gsap.set(tLeft, { y: '150vh' })
-        gsap.set(tRight, { y: '130vh' })
-
-        const testimonialsTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: tSection,
-            start: 'top top',
-            end: '+=500%',
-            pin: true,
-            scrub: 1,
-          },
-        })
-
-        testimonialsTl
-          // PHASE 1: Title Reveal
-          .to(tTitle, {
-            opacity: 1,
-            scale: 1,
-            duration: 2,
-            ease: 'power2.out',
-          })
-          // PHASE 2: Title scales down
-          .to(tTitle, {
-            scale: 0.8,
-            duration: 1,
-            ease: 'power2.inOut',
-          })
-
-          // PHASE 3: The Double Train
-          .to(
-            tLeft,
-            {
-              y: '-150vh',
-              duration: 10,
-              ease: 'none',
-            },
-            'train'
-          )
-          .to(
-            tRight,
-            {
-              y: '-180vh',
-              duration: 10,
-              ease: 'none',
-            },
-            'train'
-          )
-      }
+      )
     },
-    { scope: mainContainer, dependencies: [preloaderDone] }
+    { scope: mainContainer, dependencies: [preloaderDone, showGrid] }
   )
 
   const handleViewAll = contextSafe(() => {
