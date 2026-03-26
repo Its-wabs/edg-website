@@ -74,7 +74,12 @@ const Hero = () => {
             .fromTo(
               showcaseRef.current.text,
               { y: mobileMatch ? '40vh' : '60vh', opacity: 0 },
-              { y: 0, opacity: 1, duration: 2, ease: 'expo.out' },
+              {
+                y: mobileMatch ? '8vh' : 0,
+                opacity: 1,
+                duration: 2,
+                ease: 'expo.out',
+              },
               1.5
             )
             .fromTo(
