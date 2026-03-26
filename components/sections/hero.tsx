@@ -188,7 +188,7 @@ const Hero = () => {
       <div className="relative z-30 flex flex-col items-center pt-[12vh]">
         <h1
           ref={headlineRef}
-          className="w-[80vw] text-center font-display text-display-md uppercase leading-snug text-white md:text-display-lg"
+          className="w-[80vw] text-center font-display text-display-sm uppercase leading-snug text-white md:text-display-lg"
         >
           nous transformons vos idées métier en logiciels{' '}
           <span className="text-accent-500">rentables</span>
@@ -209,7 +209,7 @@ const Hero = () => {
         ref={manifestoRef}
         className="pointer-events-none absolute inset-0 z-40 flex flex-col items-center justify-center px-10 opacity-0"
       >
-        <h2 className="max-w-4xl text-center font-display text-display-md uppercase leading-tight text-white">
+        <h2 className="max-w-4xl text-center font-display text-display-sm uppercase leading-tight text-white md:text-display-md">
           Depuis 2016, nous accompagnons les entreprises dans leur{' '}
           <span className="text-accent-500">transformation digitale</span>.
         </h2>

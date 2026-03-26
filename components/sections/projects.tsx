@@ -50,7 +50,7 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
       <button
         ref={btnRef}
         onClick={onViewAll}
-        className="md:bottom-13 absolute bottom-10 z-20 translate-y-8  border border-white/20 px-8 py-4 font-display text-xs uppercase tracking-widest text-white opacity-0 transition-colors duration-300 hover:bg-white hover:text-black"
+        className="absolute bottom-10 z-20 translate-y-8 border  border-white/20 px-8 py-4 font-display text-xs uppercase tracking-widest text-white opacity-0 transition-colors duration-300 hover:bg-white hover:text-black md:bottom-[3vh]"
       >
         View All Projects
       </button>

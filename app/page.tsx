@@ -42,6 +42,10 @@ export default function Home() {
     () => {
       if (!preloaderDone || !projectsRef.current) return
 
+      ScrollTrigger.config({
+        ignoreMobileResize: true,
+      })
+
       let mm = gsap.matchMedia()
 
       mm.add(
@@ -59,7 +63,7 @@ export default function Home() {
 
             // 1. Initial State: Hiding off-screen with the tilt
             gsap.set(cards, {
-              yPercent: isDesktop ? -120 : -200,
+              yPercent: isDesktop ? -120 : -250,
               rotationX: isDesktop ? 60 : 45,
               z: isDesktop ? -500 : -300,
               transformPerspective: 1500,
@@ -190,7 +194,11 @@ export default function Home() {
 
             servicesTl
               .to(sTitle, { opacity: 1, scale: 1, duration: 1 })
-              .to(sTitle, { y: 0, duration: 1.2, ease: 'expo.inOut' }, 1)
+              .to(
+                sTitle,
+                { y: 0, duration: 1.2, scale: 0.5, ease: 'expo.inOut' },
+                1
+              )
               .to(
                 sCards[0],
                 { yPercent: 0, duration: 1.2, ease: 'expo.inOut' },
@@ -207,7 +215,7 @@ export default function Home() {
               servicesTl
                 .to(
                   card,
-                  { yPercent: i * (isDesktop ? 10 : 8), ease: 'power2.inOut' },
+                  { yPercent: i * (isDesktop ? 9 : 8), ease: 'power2.inOut' },
                   pos
                 )
                 .to(
@@ -215,7 +223,7 @@ export default function Home() {
                   { y: -100, scale: 0.9, opacity: 0, ease: 'power2.inOut' },
                   pos
                 )
-                // Changed .from to .fromTo for better reliability in scrub timelines
+
                 .fromTo(
                   currentContent,
                   { y: 150, opacity: 0 },
