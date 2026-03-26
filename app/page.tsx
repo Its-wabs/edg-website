@@ -362,7 +362,10 @@ export default function Home() {
   })
 
   return (
-    <div ref={mainContainer} className="relative w-full overflow-x-hidden">
+    <div
+      ref={mainContainer}
+      className="relative w-full overflow-x-hidden bg-primary-950"
+    >
       <PreLoad onComplete={() => setPreloaderDone(true)} />
 
       <NavBar
