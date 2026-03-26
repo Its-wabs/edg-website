@@ -196,7 +196,12 @@ export default function Home() {
               .to(sTitle, { opacity: 1, scale: 1, duration: 1 })
               .to(
                 sTitle,
-                { y: 0, duration: 1.2, scale: 0.5, ease: 'expo.inOut' },
+                {
+                  y: 0,
+                  duration: 1.2,
+                  scale: isDesktop ? 0.5 : 1,
+                  ease: 'expo.inOut',
+                },
                 1
               )
               .to(
