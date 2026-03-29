@@ -422,36 +422,32 @@ export default function Home() {
           }
 
           if (teamRef.current) {
-            const { section, title, grid, cards } = teamRef.current
+            const { section, bgLetters, bgWordContainer, cards } =
+              teamRef.current
             const isDesktop = context.conditions?.isDesktop
 
-            //  Mobile: skip all animation
-            if (!isDesktop) {
-              gsap.set(title, { clearProps: 'all' })
-              gsap.set(cards, { clearProps: 'all' })
-            }
-
-            // Desktop animation
-
-            gsap.set(title, {
-              y: '35vh',
-              scale: 2.2,
+            // 1. Initial States
+            gsap.set(bgLetters, {
+              x: '100vw',
+              y: '100vh',
+              rotation: 45,
               opacity: 0,
-              transformOrigin: 'center center',
             })
 
             gsap.set(cards, {
+              y: 100,
               opacity: 0,
-              y: 60,
-              rotationX: -15,
-              transformPerspective: 1000,
+              scale: 0.9,
             })
+
+            // Optional: hide container opacity initially to fade it in globally
+            gsap.set(bgWordContainer, { opacity: 0.4 })
 
             const teamTl = gsap.timeline({
               scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: isDesktop ? '+=200%' : '+=100',
+                end: isDesktop ? '+=300%' : '+=150%',
                 pin: true,
                 scrub: 1,
                 invalidateOnRefresh: true,
@@ -459,27 +455,41 @@ export default function Home() {
             })
 
             teamTl
-              .to(title, {
+              // PHASE 1: Letters fly from bottom-right to the center
+              .to(bgLetters, {
+                x: 0,
+                y: 0,
+                rotation: 0,
                 opacity: 1,
-                y: '30vh',
-                duration: 2,
-                ease: 'power2.out',
+                stagger: 0.1,
+                duration: 3,
+                ease: 'power3.out',
               })
-              .to({}, { duration: 2.5 })
-              .to(title, { y: 0, scale: 1, duration: 3, ease: 'expo.inOut' })
-              .to(grid, { opacity: 1, duration: 0.1 }, '-=1')
+
+              // PHASE 2: Word settles into the background
+              .to(
+                bgWordContainer,
+                {
+                  opacity: 0.02,
+                  scale: 0.95,
+                  duration: 2,
+                  ease: 'power2.inOut',
+                },
+                '-=1'
+              )
+
+              // PHASE 3: Grid comes up normally on top
               .to(
                 cards,
                 {
                   y: 0,
                   opacity: 1,
-                  rotationX: 0,
-                  stagger: 0.1,
-                  duration: 1.5,
-                  ease: 'power3.out',
-                  clearProps: 'all',
+                  scale: 1,
+                  stagger: 0.2,
+                  duration: 2,
+                  ease: 'expo.out',
                 },
-                '-=0.8'
+                '-=0.5'
               )
           }
 

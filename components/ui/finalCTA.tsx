@@ -4,9 +4,9 @@ const FinalCTA = forwardRef<HTMLElement>((_, ref) => {
   return (
     <section
       ref={ref}
-      className="relative flex h-screen w-full flex-col items-center justify-center bg-accent-600 px-6 py-24"
+      className="relative flex h-screen w-full flex-col items-center justify-center bg-accent-600 px-6 py-[20vh]"
     >
-      <div className="flex max-w-4xl flex-col items-center text-center">
+      <div className="flex max-w-4xl flex-col items-center pt-10 text-center">
         <h2 className="cta-title mb-8 font-display text-3xl uppercase tracking-tighter text-accent-950 md:text-8xl">
           Prêt à transformer <br />{' '}
           <span className="text-white">votre vision ?</span>
@@ -17,9 +17,7 @@ const FinalCTA = forwardRef<HTMLElement>((_, ref) => {
         </p>
 
         <button className="cta-button group relative mb-6 flex items-center gap-6 bg-white px-10 py-5 font-display text-xl text-black transition-all hover:bg-primary-950 hover:text-white">
-          <span className="uppercase tracking-widest">
-            Réserver un appel DÉCOUVERTE
-          </span>
+          <span className="uppercase tracking-widest">Réserver un appel</span>
           <span className="text-2xl transition-transform group-hover:translate-x-2">
             →
           </span>

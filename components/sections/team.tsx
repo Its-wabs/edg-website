@@ -10,47 +10,58 @@ const TEAM = [
 
 const Team = forwardRef((_, ref) => {
   const sectionRef = useRef<HTMLElement>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
+  const bgWordRef = useRef<HTMLDivElement>(null)
 
   useImperativeHandle(ref, () => ({
     section: sectionRef.current,
-    title: titleRef.current,
     grid: gridRef.current,
+    bgLetters: '.bg-letter',
+    bgWordContainer: bgWordRef.current,
     cards: '.team-card',
   }))
+
+  const word = 'EQUIPE'
 
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen w-full bg-primary-950 px-6 py-24 md:h-screen"
+      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-primary-950 px-6 py-24"
     >
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 md:px-6">
-        <h2
-          ref={titleRef}
-          className="mb-8 text-center font-display text-4xl uppercase leading-none tracking-tighter text-white md:mb-12 md:text-[8vw]"
-        >
-          L&apos;Équipe
+      <div
+        ref={bgWordRef}
+        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
+      >
+        <h2 className="flex font-display text-[25vw] font-black uppercase leading-none tracking-tighter text-white">
+          {word.split('').map((letter, i) => (
+            <span key={i} className="bg-letter inline-block">
+              {letter}
+            </span>
+          ))}
         </h2>
+      </div>
 
+      {/* 2. FOREGROUND GRID */}
+      <div className="relative z-10 w-full max-w-7xl">
         <div
           ref={gridRef}
-          className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-10"
+          className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6 lg:gap-10"
         >
           {TEAM.map((member, i) => (
             <div
               key={i}
-              className="team-card group  relative aspect-[3/4] overflow-hidden bg-primary-900"
+              className="team-card group relative aspect-square overflow-hidden border border-white/5 bg-primary-900"
             >
+              {/* Background Color/Image */}
               <div
-                className={`absolute inset-0 h-full w-full ${member.placeholderBg} transition-all duration-1000 ease-out group-hover:scale-105 md:grayscale md:group-hover:grayscale-0`}
+                className={`absolute inset-0 h-full w-full ${member.placeholderBg} transition-all duration-1000 ease-out group-hover:scale-110 md:grayscale md:group-hover:grayscale-0`}
               />
 
-              <div className="absolute inset-x-0 bottom-0 z-20 flex translate-y-0 flex-col justify-end p-6 opacity-100 transition-all duration-500 ease-out md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-                <h3 className="font-display text-3xl uppercase leading-none tracking-tighter text-white md:text-4xl">
+              <div className="absolute inset-x-0 bottom-0 z-20 flex translate-y-0 flex-col justify-end p-6 transition-all duration-500 ease-out md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                <h3 className="font-display text-2xl uppercase leading-none tracking-tighter text-white lg:text-3xl">
                   {member.name}
                 </h3>
-                <p className="mt-2 font-sans text-xs font-medium uppercase tracking-widest text-accent-500 md:text-sm">
+                <p className="mt-1 font-sans text-[10px] font-medium uppercase tracking-widest text-[#20d76c] lg:text-xs">
                   {member.role}
                 </p>
               </div>

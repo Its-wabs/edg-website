@@ -58,7 +58,7 @@ const About = forwardRef((_, ref) => {
         className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center"
       >
         <h2 className="header-title flex flex-col items-center justify-center gap-x-6 font-display text-[12vw] uppercase leading-none tracking-tighter text-white md:flex-row md:text-[8rem]">
-          <span>C&apos;est quoi</span>
+          <span>C&apos;est qui</span>
           <span className="text-accent-500">edg</span>
           <span>?</span>
         </h2>
