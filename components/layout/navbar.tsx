@@ -17,7 +17,9 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
       >
         <nav className="flex w-[90vw] items-center justify-between">
           <div className="logo flex cursor-pointer items-center justify-center gap-1">
-            <div className="mb-1 h-[30px] w-3 bg-accent-500" />
+            <span className="text-center font-display text-display-sm uppercase text-[#20d76c]">
+              I
+            </span>
             <h1 className="text-center font-display text-display-sm uppercase text-white">
               edg
             </h1>

@@ -10,7 +10,8 @@ interface PreloaderProps {
 
 const PreLoad = ({ onComplete }: PreloaderProps) => {
   const preloaderRef = useRef<HTMLDivElement>(null)
-  const barRef = useRef<HTMLDivElement>(null)
+  const barFillRef = useRef<HTMLDivElement>(null)
+  const barTrackRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLHeadingElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -32,35 +33,36 @@ const PreLoad = ({ onComplete }: PreloaderProps) => {
         },
       })
 
-      // initial state rotated
-      gsap.set(barRef.current, {
-        opacity: 1,
+      // 1. Setup initial state
+
+      gsap.set(barTrackRef.current, {
         rotation: 90,
-        scaleY: 0,
-        x: 50,
+        x: 60,
       })
-      gsap.set(textRef.current, { opacity: 0, x: -10 })
+      gsap.set(textRef.current, { x: -10 })
 
-      // the filling
-      tl.to(barRef.current, {
-        scaleY: 1,
-        duration: 3,
-        ease: 'power2.inOut',
+      tl.to(barTrackRef.current, {
+        opacity: 1,
+        duration: 0.4,
       })
-
-        // flip
+        // 2. The Filling Animation
+        .to(barFillRef.current, {
+          scaleY: 1,
+          duration: 2.5,
+          ease: 'power1.inOut',
+        })
+        // 3. The Flip & Center
         .to(
-          barRef.current,
+          barTrackRef.current,
           {
             x: 0,
             rotation: 0,
-            duration: 0.7,
+            duration: 0.8,
             ease: 'expo.inOut',
           },
-          '+=0.2'
+          '+=0.1'
         )
-
-        // reveal the text
+        // 4. Reveal Text
         .to(
           textRef.current,
           {
@@ -69,19 +71,7 @@ const PreLoad = ({ onComplete }: PreloaderProps) => {
             duration: 0.6,
             ease: 'back.out(1.7)',
           },
-          '-=0.2'
-        )
-
-        //  the exit
-
-        .to(
-          preloaderRef.current,
-          {
-            yPercent: -100,
-            duration: 1,
-            ease: 'expo.inOut',
-          },
-          '+=0.2'
+          '-=0.3'
         )
     },
     { scope: containerRef }
@@ -94,18 +84,22 @@ const PreLoad = ({ onComplete }: PreloaderProps) => {
       ref={preloaderRef}
       className="fixed inset-0 z-[999] flex items-center justify-center overflow-hidden bg-black"
     >
-      <div
-        ref={containerRef}
-        className="flex h-[40px] scale-150 items-end gap-2"
-      >
+      <div ref={containerRef} className="flex scale-[2] items-baseline gap-1">
+        {/* The Track */}
         <div
-          ref={barRef}
-          className="mb-1 h-[30px] w-3 translate-x-[50px] rotate-90 scale-y-0 bg-accent-500 opacity-0 will-change-transform"
-        />
+          ref={barTrackRef}
+          className="relative h-[28px] w-3 overflow-hidden bg-white/10 opacity-0 will-change-transform"
+        >
+          {/* The Fill  */}
+          <div
+            ref={barFillRef}
+            className="absolute inset-0 origin-bottom scale-y-0 bg-accent-500 will-change-transform"
+          />
+        </div>
 
         <h1
           ref={textRef}
-          className="-translate-x-2.5 font-display text-display-sm uppercase leading-[0.8] tracking-tighter text-white opacity-0"
+          className="font-display text-display-sm uppercase leading-none tracking-tighter text-white opacity-0"
         >
           edg
         </h1>

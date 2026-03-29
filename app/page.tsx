@@ -1,32 +1,38 @@
 'use client'
 
-import NavBar from '@/components/layout/navbar'
-import Hero from '@/components/sections/hero'
-import PreLoad from '@/components/ui/preloader'
-
 import { useEffect, useRef, useState } from 'react'
 
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
+
+import NavBar from '@/components/layout/navbar'
+import Hero from '@/components/sections/hero'
+import PreLoad from '@/components/ui/preloader'
 import Projects from '@/components/sections/projects'
 import ProjectsGrid from '@/components/ui/ProjectsGrid'
 import Services from '@/components/sections/services'
-import ServicesCTA from '@/components/ui/servicesCTA'
 import Testimonials from '@/components/sections/testimonials'
+import About from '@/components/sections/about'
+import Team from '@/components/sections/team'
+import Footer from '@/components/sections/footer'
+import FinalCTA from '@/components/ui/finalCTA'
 
 gsap.registerPlugin(ScrollTrigger)
+
 export default function Home() {
   const [preloaderDone, setPreloaderDone] = useState(false)
   const [showGrid, setShowGrid] = useState(false)
 
   const mainContainer = useRef(null)
   const heroRef = useRef<HTMLDivElement>(null)
-  const serviceCtaRef = useRef<HTMLDivElement>(null)
+  const FinalCtaRef = useRef<HTMLDivElement>(null)
   const projectsRef = useRef<any>(null)
   const servicesRef = useRef<any>(null)
   const testimonialsRef = useRef<any>(null)
-  const nextSceneRef = useRef<HTMLDivElement>(null)
+  const aboutRef = useRef<any>(null)
+  const teamRef = useRef<any>(null)
+  const footerRef = useRef<HTMLDivElement>(null)
 
   const navItemsRef = useRef<HTMLDivElement>(null)
   const navBurgerRef = useRef<HTMLDivElement>(null)
@@ -248,12 +254,10 @@ export default function Home() {
             const tRight = testimonialsRef.current.rightCol
 
             // Initial States
-            // Title starts large and invisible
             gsap.set(tTitle, { opacity: 0 })
 
-            // Both columns start well below the viewport with the right one having a head start
-            gsap.set(tLeft, { y: '150vh' })
-            gsap.set(tRight, { y: '130vh' })
+            gsap.set(tLeft, { y: '180vh' })
+            gsap.set(tRight, { y: '150vh' })
 
             const testimonialsTl = gsap.timeline({
               scrollTrigger: {
@@ -301,6 +305,351 @@ export default function Home() {
                 },
                 'train'
               )
+          }
+
+          // ABOUT SECTION
+
+          if (aboutRef.current) {
+            const { section, headline, process, stats, steps, numbers } =
+              aboutRef.current
+            const isDesktop = context.conditions?.isDesktop
+
+            const aboutTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: section,
+                start: 'top top',
+                end: isDesktop ? '+=600%' : '+=400%',
+                pin: true,
+                scrub: 1.5,
+                invalidateOnRefresh: true,
+              },
+            })
+
+            // Set initial off-stage positions
+            gsap.set([process, stats], { y: '100vh', opacity: 0 })
+
+            aboutTl
+              // PHASE 1: Headline
+              .fromTo(
+                headline.querySelectorAll('.header-title span'),
+                { y: 100, opacity: 0 },
+                { y: 0, opacity: 1, stagger: 0.15, duration: 2 },
+                0
+              )
+              .fromTo(
+                headline.querySelector('.sub-header'),
+                { y: 30, opacity: 0 },
+                { y: 0, opacity: 1, duration: 1.5 },
+                0.5
+              )
+              .to(
+                headline,
+                { y: '-100vh', opacity: 0, duration: 3, ease: 'expo.in' },
+                2
+              )
+
+              // PHASE 2: Process
+              .to(
+                process,
+                {
+                  y: 0,
+                  opacity: 1,
+                  autoAlpha: 1,
+                  duration: 4,
+                  ease: 'expo.out',
+                },
+                3.5
+              )
+              .from(
+                process.querySelector('.process-title'),
+                { opacity: 0, y: 50, duration: 2 },
+                4
+              )
+              .from(
+                process.querySelectorAll(steps),
+                { scale: 0.8, opacity: 0, stagger: 0.2, duration: 3 },
+                5
+              )
+              .to(
+                process,
+                { y: '-100vh', opacity: 0, duration: 3, ease: 'expo.in' },
+                6
+              )
+
+            // PHASE 3: Stats
+            aboutTl
+              .to(
+                stats,
+                {
+                  y: 0,
+                  opacity: 1,
+                  autoAlpha: 1,
+                  duration: 4,
+                  ease: 'expo.out',
+                },
+                8.5
+              )
+              .from(
+                stats.querySelector('.stats-title'),
+                {
+                  opacity: 0,
+                  y: 50,
+                  duration: 2,
+                },
+                9
+              )
+              .from(
+                numbers,
+                {
+                  textContent: 0,
+                  duration: 3,
+                  ease: 'power2.out',
+                  snap: { textContent: 1 },
+                  stagger: 0.2,
+                  scale: 1.1,
+                },
+                9.5
+              )
+              .to(
+                numbers,
+                {
+                  scale: 1,
+                  duration: 1,
+                  ease: 'back.out(2)',
+                },
+                '-=1'
+              )
+          }
+
+          if (teamRef.current) {
+            const { section, title, grid, cards } = teamRef.current
+            const isDesktop = context.conditions?.isDesktop
+
+            //  Mobile: skip all animation
+            if (!isDesktop) {
+              gsap.set(title, { clearProps: 'all' })
+              gsap.set(cards, { clearProps: 'all' })
+            }
+
+            // Desktop animation
+
+            gsap.set(title, {
+              y: '35vh',
+              scale: 2.2,
+              opacity: 0,
+              transformOrigin: 'center center',
+            })
+
+            gsap.set(cards, {
+              opacity: 0,
+              y: 60,
+              rotationX: -15,
+              transformPerspective: 1000,
+            })
+
+            const teamTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: section,
+                start: 'top top',
+                end: isDesktop ? '+=200%' : '+=100',
+                pin: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+              },
+            })
+
+            teamTl
+              .to(title, {
+                opacity: 1,
+                y: '30vh',
+                duration: 2,
+                ease: 'power2.out',
+              })
+              .to({}, { duration: 2.5 })
+              .to(title, { y: 0, scale: 1, duration: 3, ease: 'expo.inOut' })
+              .to(grid, { opacity: 1, duration: 0.1 }, '-=1')
+              .to(
+                cards,
+                {
+                  y: 0,
+                  opacity: 1,
+                  rotationX: 0,
+                  stagger: 0.1,
+                  duration: 1.5,
+                  ease: 'power3.out',
+                  clearProps: 'all',
+                },
+                '-=0.8'
+              )
+          }
+
+          // FINAL CTA SECTION
+          if (FinalCtaRef.current) {
+            const section = FinalCtaRef.current
+            const content = section.querySelector('div')
+            const title = section.querySelector('h2')
+            const paras = [
+              section.querySelector('.cta-para-top'),
+              section.querySelector('.cta-para-bottom'),
+            ]
+            const button = section.querySelector('button')
+            const isDesktop = context.conditions?.isDesktop
+
+            // 1. Initial States
+            gsap.set(content, {
+              scale: isDesktop ? 0.8 : 1,
+              opacity: 0,
+              y: 50,
+            })
+
+            gsap.set(button, {
+              scale: 0.9,
+              opacity: 0,
+            })
+
+            gsap.set(paras, {
+              scale: isDesktop ? 0.8 : 1,
+              opacity: 0,
+              y: 50,
+            })
+
+            const ctaTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: section,
+                start: isDesktop ? 'top top' : 'top 80%',
+                end: isDesktop ? '+=200%' : 'bottom 20%',
+                pin: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+              },
+            })
+
+            ctaTl
+              //  Initial reveal
+              .to(content, {
+                scale: 1,
+                opacity: 1,
+                y: 0,
+                duration: 2,
+                ease: 'power2.out',
+              })
+
+              // PHASE 2: Title & Paragraph Pop
+              .from(
+                title,
+                {
+                  y: 40,
+                  opacity: 0,
+                  duration: 1,
+                },
+                '-=1'
+              )
+
+              //  The Button reveal
+              .to(
+                button,
+                {
+                  scale: 1,
+                  opacity: 1,
+                  duration: 1.5,
+                  ease: 'back.out',
+                },
+                '-=0.5'
+              )
+
+              .to(
+                paras,
+                {
+                  scale: 1,
+                  opacity: 1,
+                  y: 0,
+                  duration: 1,
+                  stagger: 0.2,
+                  ease: 'power2.out',
+                },
+                '-=0.3'
+              )
+          }
+
+          if (isDesktop && FinalCtaRef.current) {
+            gsap.set(navBurgerRef.current, { scale: 0, opacity: 0 })
+
+            const navMorphTl = gsap.timeline({ paused: true })
+
+            navMorphTl
+              .to(navItemsRef.current, {
+                x: 30,
+                opacity: 0,
+                pointerEvents: 'none',
+                duration: 0.4,
+                ease: 'power2.in',
+              })
+              .to(
+                navBurgerRef.current,
+                { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.7)' },
+                '-=0.2'
+              )
+
+            ScrollTrigger.create({
+              trigger: FinalCtaRef.current,
+              start: 'top top',
+
+              end: '+=200%',
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                if (self.progress > 0.01 && self.progress < 0.8) {
+                  navMorphTl.play()
+                } else if (self.progress <= 0.01) {
+                  navMorphTl.reverse()
+                }
+              },
+              onLeave: () => {
+                gsap.to(navContainerRef.current, {
+                  autoAlpha: 0,
+                  y: -50,
+                  duration: 0.4,
+                  ease: 'power2.inOut',
+                  overwrite: 'auto',
+                })
+              },
+              onEnterBack: () => {
+                gsap.to(navContainerRef.current, {
+                  autoAlpha: 1,
+                  y: 0,
+                  duration: 0.3,
+                  overwrite: 'auto',
+                })
+              },
+            })
+          } else {
+            gsap.set(navBurgerRef.current, { scale: 1, opacity: 1 })
+          }
+
+          // hide navbar on mobile when footer enters viewport
+          if (!isDesktop && footerRef.current) {
+            ScrollTrigger.create({
+              trigger: footerRef.current,
+              start: 'top bottom',
+              invalidateOnRefresh: true,
+              onEnter: () => {
+                gsap.to(navContainerRef.current, {
+                  autoAlpha: 0,
+                  y: -50,
+                  duration: 0.4,
+                  ease: 'power2.inOut',
+                  overwrite: 'auto',
+                })
+              },
+              onLeaveBack: () => {
+                gsap.to(navContainerRef.current, {
+                  autoAlpha: 1,
+                  y: 0,
+                  duration: 0.3,
+                  ease: 'power2.out',
+                  overwrite: 'auto',
+                })
+              },
+            })
           }
         }
       )
@@ -390,19 +739,16 @@ export default function Home() {
 
       <Services ref={servicesRef} />
 
-      <div ref={serviceCtaRef} className="relative z-0">
-        <ServicesCTA />
-      </div>
-
       <Testimonials ref={testimonialsRef} />
 
-      <div
-        ref={nextSceneRef}
-        className="flex h-[100vh] items-center justify-center bg-black"
-      >
-        <h2 className="font-display text-display-xl uppercase text-white">
-          team
-        </h2>
+      <About ref={aboutRef} />
+
+      <Team ref={teamRef} />
+
+      <FinalCTA ref={FinalCtaRef} />
+
+      <div ref={footerRef}>
+        <Footer />
       </div>
     </div>
   )
