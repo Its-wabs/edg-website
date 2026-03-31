@@ -45,14 +45,8 @@ const Hero = () => {
             ? mobileProjectRef.current
             : projectsRef.current
 
-          if (mobileMatch && ctaRef.current) {
-            gsap.from(ctaRef.current, {
-              y: 40,
-              opacity: 0,
-              duration: 1.2,
-              delay: 0.5,
-              ease: 'power3.out',
-            })
+          if (ctaRef.current) {
+            gsap.set(ctaRef.current, { y: 0, opacity: 1, yPercent: 0 })
           }
 
           const masterTl = gsap.timeline({
@@ -60,7 +54,7 @@ const Hero = () => {
               trigger: sectionRef.current,
               start: 'top top',
               end: '+=700%',
-              scrub: 1.5,
+              scrub: mobileMatch ? 1 : 1.5,
               pin: true,
               invalidateOnRefresh: true,
             },
@@ -76,6 +70,16 @@ const Hero = () => {
             .to(
               target,
               { opacity: 0, y: '-50vh', filter: 'blur(20px)', duration: 2 },
+              0
+            )
+            .to(
+              ctaRef.current,
+              {
+                yPercent: '-50vh',
+                opacity: 0,
+                duration: 1.5,
+                ease: 'power2.inOut',
+              },
               0
             )
 
