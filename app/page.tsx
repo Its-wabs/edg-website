@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { ScrollToPlugin } from 'gsap/all'
 import { useGSAP } from '@gsap/react'
 
 import NavBar from '@/components/layout/navbar'
@@ -18,7 +19,7 @@ import Team from '@/components/sections/team'
 import Footer from '@/components/sections/footer'
 import FinalCTA from '@/components/ui/finalCTA'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
 export default function Home() {
   const [preloaderDone, setPreloaderDone] = useState(false)
@@ -37,6 +38,7 @@ export default function Home() {
   const navItemsRef = useRef<HTMLDivElement>(null)
   const navBurgerRef = useRef<HTMLDivElement>(null)
   const navContainerRef = useRef<HTMLDivElement>(null)
+  const navTl = useRef<gsap.core.Timeline | null>(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined')
@@ -134,23 +136,30 @@ export default function Home() {
           }
 
           if (isDesktop && heroRef.current) {
-            gsap.set(navBurgerRef.current, { scale: 0, opacity: 0 })
+            gsap.set(navBurgerRef.current, { scale: 0, autoAlpha: 0 })
 
             const navMorphTl = gsap.timeline({ paused: true })
 
             navMorphTl
               .to(navItemsRef.current, {
                 x: 30,
-                opacity: 0,
+                autoAlpha: 0,
                 pointerEvents: 'none',
                 duration: 0.4,
                 ease: 'power2.in',
               })
               .to(
                 navBurgerRef.current,
-                { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.7)' },
+                {
+                  scale: 1,
+                  autoAlpha: 1,
+                  duration: 0.4,
+                  ease: 'back.out(1.7)',
+                },
                 '-=0.2'
               )
+
+            navTl.current = navMorphTl
 
             ScrollTrigger.create({
               trigger: heroRef.current,
@@ -172,7 +181,7 @@ export default function Home() {
               },
             })
           } else {
-            gsap.set(navBurgerRef.current, { scale: 1, opacity: 1 })
+            gsap.set(navBurgerRef.current, { scale: 1, autoAlpha: 1 })
           }
 
           // SERVICES SECTION
@@ -440,22 +449,21 @@ export default function Home() {
               scale: 0.9,
             })
 
-            // Optional: hide container opacity initially to fade it in globally
             gsap.set(bgWordContainer, { opacity: 0.4 })
 
             const teamTl = gsap.timeline({
               scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: isDesktop ? '+=300%' : '+=150%',
-                pin: true,
+                end: isDesktop ? '+=300%' : '+=120%',
+                pin: isDesktop,
                 scrub: 1,
                 invalidateOnRefresh: true,
               },
             })
 
             teamTl
-              // PHASE 1: Letters fly from bottom-right to the center
+              // Letters fly from bottom-right to the center
               .to(bgLetters, {
                 x: 0,
                 y: 0,
@@ -466,7 +474,6 @@ export default function Home() {
                 ease: 'power3.out',
               })
 
-              // PHASE 2: Word settles into the background
               .to(
                 bgWordContainer,
                 {
@@ -478,7 +485,6 @@ export default function Home() {
                 '-=1'
               )
 
-              // PHASE 3: Grid comes up normally on top
               .to(
                 cards,
                 {
@@ -505,7 +511,7 @@ export default function Home() {
             const button = section.querySelector('button')
             const isDesktop = context.conditions?.isDesktop
 
-            // 1. Initial States
+            //  Initial States
             gsap.set(content, {
               scale: isDesktop ? 0.8 : 1,
               opacity: 0,
@@ -544,7 +550,7 @@ export default function Home() {
                 ease: 'power2.out',
               })
 
-              // PHASE 2: Title & Paragraph Pop
+              // Title & Paragraph Pop
               .from(
                 title,
                 {
@@ -582,24 +588,29 @@ export default function Home() {
           }
 
           if (isDesktop && FinalCtaRef.current) {
-            gsap.set(navBurgerRef.current, { scale: 0, opacity: 0 })
+            gsap.set(navBurgerRef.current, { scale: 0, autoAlpha: 0 })
 
             const navMorphTl = gsap.timeline({ paused: true })
 
             navMorphTl
               .to(navItemsRef.current, {
                 x: 30,
-                opacity: 0,
+                autoAlpha: 0,
                 pointerEvents: 'none',
                 duration: 0.4,
                 ease: 'power2.in',
               })
               .to(
                 navBurgerRef.current,
-                { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.7)' },
+                {
+                  scale: 1,
+                  autoAlpha: 1,
+                  duration: 0.4,
+                  ease: 'back.out(1.7)',
+                },
                 '-=0.2'
               )
-
+            navTl.current = navMorphTl
             ScrollTrigger.create({
               trigger: FinalCtaRef.current,
               start: 'top top',
@@ -632,7 +643,7 @@ export default function Home() {
               },
             })
           } else {
-            gsap.set(navBurgerRef.current, { scale: 1, opacity: 1 })
+            gsap.set(navBurgerRef.current, { scale: 1, autoAlpha: 1 })
           }
 
           // hide navbar on mobile when footer enters viewport
@@ -720,6 +731,32 @@ export default function Home() {
       .to(section, { opacity: 0, duration: 0.4 }, '-=0.2')
   })
 
+  // back to top
+
+  const handleBackToTop = contextSafe(() => {
+    // 1. Force the Navbar back to its "Start" state immediately
+    if (navTl.current) {
+      navTl.current.reverse().pause()
+    }
+
+    // 2. Ensure the container is visible
+    gsap.to(navContainerRef.current, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.3,
+    })
+
+    // 3. Smooth scroll to top
+    gsap.to(window, {
+      scrollTo: { y: 0 },
+      duration: 1.2,
+      ease: 'power4.inOut',
+      onComplete: () => {
+        ScrollTrigger.refresh()
+      },
+    })
+  })
+
   return (
     <div
       ref={mainContainer}
@@ -757,9 +794,7 @@ export default function Home() {
 
       <FinalCTA ref={FinalCtaRef} />
 
-      <div ref={footerRef}>
-        <Footer />
-      </div>
+      <Footer ref={footerRef} onScrollToTop={handleBackToTop} />
     </div>
   )
 }

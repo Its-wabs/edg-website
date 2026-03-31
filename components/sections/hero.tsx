@@ -17,12 +17,13 @@ const Hero = () => {
   const showcaseRef = useRef<any>(null) // Video Grid
   const manifestoRef = useRef<HTMLDivElement>(null)
   const mobileProjectRef = useRef<any>(null)
+  const ctaRef = useRef<HTMLButtonElement>(null)
 
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile() // Check on mount
+    checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
@@ -44,6 +45,16 @@ const Hero = () => {
             ? mobileProjectRef.current
             : projectsRef.current
 
+          if (mobileMatch && ctaRef.current) {
+            gsap.from(ctaRef.current, {
+              y: 40,
+              opacity: 0,
+              duration: 1.2,
+              delay: 0.5,
+              ease: 'power3.out',
+            })
+          }
+
           const masterTl = gsap.timeline({
             scrollTrigger: {
               trigger: sectionRef.current,
@@ -58,7 +69,7 @@ const Hero = () => {
           gsap.set([headlineRef.current, manifestoRef.current], {
             clearProps: 'fontSize,all',
           })
-          // PHASE 2 : dismiss the carousel
+          // dismiss the carousel
 
           masterTl
             .to(headlineRef.current, { y: '-50vh', opacity: 0, duration: 2 }, 0)
@@ -68,7 +79,7 @@ const Hero = () => {
               0
             )
 
-          // PHASE 2: isolated hero project
+          //  isolated hero project
           masterTl
             .to(showcaseRef.current.container, { opacity: 1, duration: 2 }, 1.5)
             .fromTo(
@@ -142,7 +153,7 @@ const Hero = () => {
             5.5
           )
 
-          // PHASE 3: MANIFESTO
+          //  MANIFESTO
           masterTl
             .to(
               showcaseRef.current.container,
@@ -162,7 +173,7 @@ const Hero = () => {
               9
             )
 
-          //  PHASE 4: FINAL EXIT
+          //   FINAL EXIT
           masterTl.to(
             [showcaseRef.current.container, manifestoRef.current],
             {
@@ -203,6 +214,31 @@ const Hero = () => {
         </h1>
         <div className="block w-full md:hidden">
           <HeroProjectsMobile ref={mobileProjectRef} isActive={isMobile} />
+
+          {/* Mobile CTA Button */}
+          <div className="mt-8 flex w-full justify-center px-6">
+            <button
+              ref={ctaRef}
+              onClick={() => {
+                /* scroll to contact or navigate to add later */
+              }}
+              className="group relative flex items-center gap-3  bg-accent-500 px-8 py-4 font-sans text-sm font-bold uppercase tracking-wider text-primary-950 transition-transform hover:bg-white active:scale-95"
+            >
+              Démarrer un projet
+              <svg
+                className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeWidth="2.5"
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
         <div className="hidden w-full md:block">
           <HeroProjects ref={projectsRef} isActive={!isMobile} />
