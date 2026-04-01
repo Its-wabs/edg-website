@@ -46,7 +46,7 @@ const PreLoad = ({ onComplete }: PreloaderProps) => {
 
           gsap.set(barTrackRef.current, {
             rotation: 90,
-            x: isDesktop ? 55 : 40,
+            x: isDesktop ? 55 : 45,
           })
           gsap.set(textRef.current, { x: -10 })
 
