@@ -19,60 +19,71 @@ const PreLoad = ({ onComplete }: PreloaderProps) => {
 
   useGSAP(
     () => {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          gsap.to(preloaderRef.current, {
-            yPercent: -100,
-            duration: 0.8,
-            ease: 'expo.inOut',
+      let mm = gsap.matchMedia()
+
+      mm.add(
+        {
+          isDesktop: '(min-width: 768px)',
+          isMobile: '(max-width: 767px)',
+        },
+        (context) => {
+          const { isDesktop } = context.conditions as any
+          const tl = gsap.timeline({
             onComplete: () => {
-              setIsComplete(true)
-              onComplete()
+              gsap.to(preloaderRef.current, {
+                yPercent: -100,
+                duration: 0.8,
+                ease: 'expo.inOut',
+                onComplete: () => {
+                  setIsComplete(true)
+                  onComplete()
+                },
+              })
             },
           })
-        },
-      })
 
-      // 1. Setup initial state
+          // 1. Setup initial state
 
-      gsap.set(barTrackRef.current, {
-        rotation: 90,
-        x: 60,
-      })
-      gsap.set(textRef.current, { x: -10 })
+          gsap.set(barTrackRef.current, {
+            rotation: 90,
+            x: isDesktop ? 55 : 40,
+          })
+          gsap.set(textRef.current, { x: -10 })
 
-      tl.to(barTrackRef.current, {
-        opacity: 1,
-        duration: 0.4,
-      })
-        // 2. The Filling Animation
-        .to(barFillRef.current, {
-          scaleY: 1,
-          duration: 2.5,
-          ease: 'power1.inOut',
-        })
-        // 3. The Flip & Center
-        .to(
-          barTrackRef.current,
-          {
-            x: 0,
-            rotation: 0,
-            duration: 0.8,
-            ease: 'expo.inOut',
-          },
-          '+=0.1'
-        )
-        // 4. Reveal Text
-        .to(
-          textRef.current,
-          {
+          tl.to(barTrackRef.current, {
             opacity: 1,
-            x: 0,
-            duration: 0.6,
-            ease: 'back.out(1.7)',
-          },
-          '-=0.3'
-        )
+            duration: 0.4,
+          })
+            // 2. The Filling Animation
+            .to(barFillRef.current, {
+              scaleY: 1,
+              duration: 2.5,
+              ease: 'power1.inOut',
+            })
+            // 3. The Flip & Center
+            .to(
+              barTrackRef.current,
+              {
+                x: 0,
+                rotation: 0,
+                duration: 0.8,
+                ease: 'expo.inOut',
+              },
+              '+=0.1'
+            )
+            // 4. Reveal Text
+            .to(
+              textRef.current,
+              {
+                opacity: 1,
+                x: 0,
+                duration: 0.6,
+                ease: 'back.out(1.7)',
+              },
+              '-=0.3'
+            )
+        }
+      )
     },
     { scope: containerRef }
   )
