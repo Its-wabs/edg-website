@@ -17,13 +17,15 @@ import Testimonials from '@/components/sections/testimonials'
 import About from '@/components/sections/about'
 import Team from '@/components/sections/team'
 import Footer from '@/components/sections/footer'
-import FinalCTA from '@/components/ui/finalCTA'
+import FinalCTA from '@/components/sections/finalCTA'
+import Menu from '@/components/layout/menu'
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
 export default function Home() {
   const [preloaderDone, setPreloaderDone] = useState(false)
   const [showGrid, setShowGrid] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const mainContainer = useRef(null)
   const heroRef = useRef<HTMLDivElement>(null)
@@ -45,6 +47,12 @@ export default function Home() {
       window.history.scrollRestoration = 'manual'
     document.body.style.overflow = preloaderDone ? 'auto' : 'hidden'
   }, [preloaderDone])
+
+  useEffect(() => {
+    // Lock scroll if preloader is active OR menu is open
+    document.body.style.overflow =
+      preloaderDone && !isMenuOpen ? 'auto' : 'hidden'
+  }, [preloaderDone, isMenuOpen])
 
   const { contextSafe } = useGSAP(
     () => {
@@ -435,72 +443,74 @@ export default function Home() {
               teamRef.current
             const isDesktop = context.conditions?.isDesktop
 
-            // 1. Initial States
-            gsap.set(bgLetters, {
-              x: '100vw',
-              y: '100vh',
-              rotation: 45,
-              opacity: 0,
-            })
+            if (isDesktop) {
+              // DESKTOP ANIMATION
+              gsap.set(bgLetters, {
+                x: '100vw',
+                y: '100vh',
+                rotation: 45,
+                opacity: 0,
+              })
+              gsap.set(cards, { y: 100, opacity: 0, scale: 0.9 })
+              gsap.set(bgWordContainer, { opacity: 0.4 })
 
-            gsap.set(cards, {
-              y: 100,
-              opacity: 0,
-              scale: 0.9,
-            })
-
-            gsap.set(bgWordContainer, { opacity: 0.4 })
-
-            const teamTl = gsap.timeline({
-              scrollTrigger: {
-                trigger: section,
-                start: 'top top',
-                end: isDesktop ? '+=300%' : '+=120%',
-                pin: isDesktop,
-                scrub: 1,
-                invalidateOnRefresh: true,
-              },
-            })
-
-            teamTl
-              // Letters fly from bottom-right to the center
-              .to(bgLetters, {
-                x: 0,
-                y: 0,
-                rotation: 0,
-                opacity: 1,
-                stagger: 0.1,
-                duration: 3,
-                ease: 'power3.out',
+              const teamTl = gsap.timeline({
+                scrollTrigger: {
+                  trigger: section,
+                  start: 'top top',
+                  end: '+=300%',
+                  pin: true,
+                  scrub: 1,
+                  invalidateOnRefresh: true,
+                },
               })
 
-              .to(
-                bgWordContainer,
-                {
-                  opacity: 0.02,
-                  scale: 0.95,
-                  duration: 2,
-                  ease: 'power2.inOut',
-                },
-                '-=1'
-              )
-
-              .to(
-                cards,
-                {
+              teamTl
+                .to(bgLetters, {
+                  x: 0,
                   y: 0,
+                  rotation: 0,
                   opacity: 1,
-                  scale: 1,
-                  stagger: 0.2,
-                  duration: 2,
-                  ease: 'expo.out',
-                },
-                '-=0.5'
-              )
+                  stagger: 0.1,
+                  duration: 3,
+                  ease: 'power3.out',
+                })
+                .to(
+                  bgWordContainer,
+                  {
+                    opacity: 0.02,
+                    scale: 0.95,
+                    duration: 2,
+                    ease: 'power2.inOut',
+                  },
+                  '-=1'
+                )
+                .to(
+                  cards,
+                  {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    stagger: 0.2,
+                    duration: 2,
+                    ease: 'expo.out',
+                  },
+                  '-=0.5'
+                )
+            } else {
+              //  MOBILE: SIMPLE SECTION
+
+              gsap.set([bgLetters, cards, bgWordContainer], {
+                clearProps: 'all',
+              })
+
+              gsap.set(bgLetters, { opacity: 1, x: 0, y: 0, rotation: 0 })
+              gsap.set(cards, { opacity: 1, y: 0, scale: 1 })
+            }
           }
 
           // FINAL CTA SECTION
-          if (FinalCtaRef.current) {
+          if (FinalCtaRef.current && isDesktop) {
             const section = FinalCtaRef.current
             const content = section.querySelector('div')
             const title = section.querySelector('h2')
@@ -534,7 +544,7 @@ export default function Home() {
                 trigger: section,
                 start: isDesktop ? 'top top' : 'top 80%',
                 end: isDesktop ? '+=200%' : 'bottom 20%',
-                pin: true,
+                pin: isDesktop,
                 scrub: 1,
                 invalidateOnRefresh: true,
               },
@@ -764,10 +774,14 @@ export default function Home() {
     >
       <PreLoad onComplete={() => setPreloaderDone(true)} />
 
+      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+
       <NavBar
         itemsRef={navItemsRef}
         burgerRef={navBurgerRef}
         navContainerRef={navContainerRef}
+        onBurgerClick={() => setIsMenuOpen(!isMenuOpen)}
+        isOpen={isMenuOpen}
       />
 
       <div ref={heroRef}>

@@ -6,14 +6,16 @@ interface NavBarProps {
   itemsRef: React.RefObject<HTMLDivElement>
   burgerRef: React.RefObject<HTMLDivElement>
   navContainerRef: React.RefObject<HTMLDivElement>
+  onBurgerClick: () => void
+  isOpen: boolean
 }
 
 const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
-  ({ itemsRef, burgerRef, navContainerRef }) => {
+  ({ itemsRef, burgerRef, navContainerRef, onBurgerClick, isOpen }) => {
     return (
       <div
         ref={navContainerRef}
-        className="navbar fixed top-6 z-40 flex w-full items-center justify-center rounded-lg border-none border-transparent"
+        className="navbar fixed top-6 z-[100] flex w-full items-center justify-center rounded-lg border-none border-transparent"
       >
         <nav className="flex w-[90vw] items-center justify-between">
           <div className="logo flex cursor-pointer items-center justify-center gap-1">
@@ -42,10 +44,15 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
           {/* The menu Icon thats Hidden by default  */}
           <div
             ref={burgerRef}
-            className="scale-1 absolute right-[5vw] flex cursor-pointer flex-col gap-1.5 p-2 md:scale-0"
+            onClick={onBurgerClick}
+            className="scale-1 absolute  right-[5vw] flex cursor-pointer flex-col gap-1.5 p-2 md:scale-0"
           >
-            <div className="h-[3px] w-8 rounded-full bg-white" />
-            <div className="h-[3px] w-8 rounded-full bg-white" />
+            <div
+              className={`h-[3px] w-8 rounded-full bg-white transition-transform duration-300 ${isOpen ? 'translate-y-[9px] rotate-45' : ''}`}
+            />
+            <div
+              className={`h-[3px] w-8 rounded-full bg-white transition-transform duration-300 ${isOpen ? '-translate-y-[9px] -rotate-45' : ''}`}
+            />
           </div>
         </nav>
       </div>

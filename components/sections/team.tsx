@@ -2,11 +2,7 @@
 
 import { useRef, forwardRef, useImperativeHandle } from 'react'
 
-const TEAM = [
-  { name: 'Meriem', role: 'CEO', placeholderBg: 'bg-blue-600' },
-  { name: 'Sophie', role: 'Lead Développeur', placeholderBg: 'bg-purple-600' },
-  { name: 'Marc', role: 'Expert Stratégie', placeholderBg: 'bg-orange-500' },
-]
+const TEAM = [{ name: 'Meriem', role: 'CEO', placeholderBg: 'bg-blue-600' }]
 
 const Team = forwardRef((_, ref) => {
   const sectionRef = useRef<HTMLElement>(null)
@@ -21,18 +17,19 @@ const Team = forwardRef((_, ref) => {
     cards: '.team-card',
   }))
 
-  const word = 'EQUIPE'
+  const word = "L'EQUIPE"
+  const isSingleMember = TEAM.length === 1
 
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-primary-950 px-6 py-24"
+      className="relative flex w-full flex-col items-center bg-primary-950 px-6 py-20 md:min-h-screen md:justify-center md:py-24"
     >
       <div
         ref={bgWordRef}
-        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
+        className="pointer-events-none z-0 mb-10 flex items-center justify-center overflow-hidden md:absolute md:inset-0 md:mb-0"
       >
-        <h2 className="flex font-display text-[25vw] font-black uppercase leading-none tracking-tighter text-white">
+        <h2 className="flex font-display text-[18vw] font-black uppercase leading-none tracking-tight text-white md:text-[20vw]">
           {word.split('').map((letter, i) => (
             <span key={i} className="bg-letter inline-block">
               {letter}
@@ -45,12 +42,18 @@ const Team = forwardRef((_, ref) => {
       <div className="relative z-10 w-full max-w-7xl">
         <div
           ref={gridRef}
-          className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6 lg:gap-10"
+          className={`w-full ${
+            isSingleMember
+              ? 'flex items-center justify-center'
+              : 'grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6 lg:gap-10'
+          }`}
         >
           {TEAM.map((member, i) => (
             <div
               key={i}
-              className="team-card group relative aspect-square overflow-hidden border border-white/5 bg-primary-900"
+              className={`team-card group relative aspect-square overflow-hidden border border-white/5 bg-primary-900 ${
+                isSingleMember ? 'w-full max-w-sm md:max-w-md' : 'w-full'
+              }`}
             >
               {/* Background Color/Image */}
               <div

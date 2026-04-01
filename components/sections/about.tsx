@@ -2,26 +2,21 @@
 
 import { useRef, forwardRef, useImperativeHandle } from 'react'
 
-const STEPS = [
+const PRINCIPLES = [
   {
     id: '01',
-    title: 'DÉCOUVERTE APPROFONDIE',
-    desc: 'Nous analysons vos besoins réels pour concevoir des solutions qui frappent juste.',
+    title: 'MISSION',
+    desc: "Propulser l'innovation numérique en transformant des idées complexes en expériences fluides et performantes.",
   },
   {
     id: '02',
-    title: 'STRATÉGIE & UX',
-    desc: 'Priorité à la conversion et à une structure claire pour guider vos utilisateurs.',
+    title: 'VISION',
+    desc: "Devenir le partenaire stratégique de référence pour les entreprises qui visent l'excellence digitale.",
   },
   {
     id: '03',
-    title: 'DESIGN SUR MESURE',
-    desc: 'Une identité visuelle forte qui distingue votre marque sur le marché.',
-  },
-  {
-    id: '04',
-    title: 'DÉVELOPPEMENT SCALABLE',
-    desc: 'Des technologies modernes et robustes pour soutenir votre croissance.',
+    title: 'APPROCHE',
+    desc: 'Un équilibre parfait entre rigueur technique, stratégie data-driven et intuition artistique.',
   },
 ]
 
@@ -68,28 +63,33 @@ const About = forwardRef((_, ref) => {
         </p>
       </div>
 
-      {/* LAYER 2: PROCESS GRID */}
+      {/* LAYER 2: PRINCIPLES GRID */}
       <div
         ref={processRef}
         className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-4 opacity-0 md:px-20"
       >
-        <h2 className="process-title mb-8 text-center font-display text-3xl uppercase tracking-tighter text-white md:text-6xl">
-          Notre Processus
+        <h2 className="process-title mb-12 text-center font-display text-3xl uppercase tracking-tighter text-white md:text-6xl">
+          Notre Philosophie
         </h2>
-        <div className="grid w-full max-w-7xl grid-cols-1 border border-white/10 bg-primary-950/50 backdrop-blur-sm md:grid-cols-2">
-          {STEPS.map((step, i) => (
+        {/* Changed to grid-cols-3 for 3 items */}
+        <div className="grid w-full max-w-7xl grid-cols-1 border-l border-t border-white/10 bg-primary-950/50 backdrop-blur-sm md:grid-cols-3">
+          {PRINCIPLES.map((item, i) => (
             <div
               key={i}
-              className="step-card flex flex-col gap-2 border-b border-white/10 p-6 last:border-b-0 md:border md:p-12"
+              className="step-card flex flex-col gap-4 border-b border-r border-white/10 p-8 transition-colors hover:bg-white/[0.02] md:p-12"
             >
-              <span className="font-display text-3xl text-accent-500 md:text-5xl">
-                {step.id}
+              <span className="font-display text-4xl text-accent-500 md:text-6xl">
+                {item.id}
               </span>
-              <h3 className="font-display text-lg uppercase text-white md:text-xl">
-                {step.title}
-              </h3>
-              <p className="text-xs leading-relaxed text-white/50 md:text-sm">
-                {step.desc}
+              <div className="overflow-hidden">
+                {' '}
+                {/* Mask for the title */}
+                <h3 className="font-display text-xl uppercase text-white md:text-2xl">
+                  {item.title}
+                </h3>
+              </div>
+              <p className="text-sm leading-relaxed text-white/60 md:text-base">
+                {item.desc}
               </p>
             </div>
           ))}
