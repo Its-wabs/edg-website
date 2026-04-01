@@ -161,7 +161,19 @@ const Footer = forwardRef<HTMLElement, { onScrollToTop?: () => void }>(
               ))}
             </div>
             <div className="font-sans text-sm font-medium text-white/30">
-              © 2026 Copyright EDG Informatique. All Rights Reserved.
+              <p>
+                © 2026 Copyright EDG Informatique.{' '}
+                <span>
+                  Designed & Built by{' '}
+                  <a
+                    href="https://itswabs.vercel.app/"
+                    target="new"
+                    className="uppercase text-white/50 transition-colors hover:text-[#20d76c]"
+                  >
+                    wabs
+                  </a>
+                </span>
+              </p>
             </div>
           </div>
         </div>
