@@ -68,10 +68,10 @@ const About = forwardRef((_, ref) => {
         ref={processRef}
         className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-4 opacity-0 md:px-20"
       >
-        <h2 className="process-title mb-12 text-center font-display text-3xl uppercase tracking-tighter text-white md:text-6xl">
+        <h2 className="process-title mb-12 text-center font-display text-2xl uppercase tracking-tighter text-white md:text-6xl">
           Notre Philosophie
         </h2>
-        {/* Changed to grid-cols-3 for 3 items */}
+        {/* the grid*/}
         <div className="grid w-full max-w-7xl grid-cols-1 border-l border-t border-white/10 bg-primary-950/50 backdrop-blur-sm md:grid-cols-3">
           {PRINCIPLES.map((item, i) => (
             <div
@@ -83,7 +83,7 @@ const About = forwardRef((_, ref) => {
               </span>
               <div className="overflow-hidden">
                 {' '}
-                {/* Mask for the title */}
+                {/* mask for the title */}
                 <h3 className="font-display text-xl uppercase text-white md:text-2xl">
                   {item.title}
                 </h3>
@@ -109,7 +109,6 @@ const About = forwardRef((_, ref) => {
           {STATS.map((stat, i) => (
             <div key={i} className="flex flex-col items-center">
               <span className="font-display text-6xl tracking-tighter text-white md:text-[8rem]">
-                {/* ONLY the number is inside this span */}
                 <span className="num-val inline-block">
                   {stat.value.replace('+', '')}
                 </span>

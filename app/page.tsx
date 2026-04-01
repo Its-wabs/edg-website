@@ -343,6 +343,7 @@ export default function Home() {
             })
 
             // Set initial off-stage positions
+
             gsap.set([process, stats], { y: '100vh', opacity: 0 })
 
             aboutTl
@@ -384,7 +385,13 @@ export default function Home() {
               )
               .from(
                 process.querySelectorAll(steps),
-                { scale: 0.8, opacity: 0, stagger: 0.2, duration: 3 },
+                {
+                  scale: isDesktop ? 0.8 : 0.95,
+                  y: isDesktop ? 0 : 20,
+                  opacity: 0,
+                  stagger: 0.2,
+                  duration: 3,
+                },
                 5
               )
               .to(
@@ -437,6 +444,8 @@ export default function Home() {
                 '-=1'
               )
           }
+
+          // team
 
           if (teamRef.current) {
             const { section, bgLetters, bgWordContainer, cards } =

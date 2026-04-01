@@ -24,7 +24,7 @@ export default function Menu({
   onClose: () => void
 }) {
   const container = useRef(null)
-  // We'll target the wrappers for the GSAP entrance to keep the "masking" look
+
   const linksRef = useRef<HTMLDivElement[]>([])
 
   useGSAP(
@@ -36,7 +36,7 @@ export default function Menu({
           ease: 'power4.inOut',
         })
 
-        // The GSAP entrance: sliding the link UP into its mask
+        // The GSAP entrance
         gsap.fromTo(
           linksRef.current,
           { y: 120, opacity: 0 },
@@ -69,7 +69,6 @@ export default function Menu({
     >
       <nav className="flex flex-col items-center gap-6">
         {MENU_LINKS.map((link, i) => (
-          /* 1. THE MASK: This div clips the text so it "rolls" into view */
           <div
             key={link.label}
             className="group w-full overflow-hidden px-8 py-1"
@@ -85,12 +84,12 @@ export default function Menu({
                 onClick={onClose}
                 className="relative block font-display text-5xl  font-black uppercase leading-none tracking-tight text-white md:text-7xl"
               >
-                {/* LAYER 1: Default Text (Slides UP and OUT) */}
+                {/* LAYER 1: Default Text */}
                 <span className="ease-[0.76, 0, 0.24, 1] block transition-transform duration-500 group-hover:-translate-y-full">
                   {link.label}
                 </span>
 
-                {/* LAYER 2: Hover Text (Slides UP and IN from bottom) */}
+                {/* LAYER 2: Hover Text  */}
                 <span className="ease-[0.76, 0, 0.24, 1] absolute inset-0 block translate-y-full italic text-accent-500 transition-transform duration-500 group-hover:translate-y-0">
                   {link.label}
                 </span>
