@@ -362,7 +362,12 @@ export default function Home() {
               )
               .to(
                 headline,
-                { y: '-100vh', opacity: 0, duration: 3, ease: 'expo.in' },
+                {
+                  y: isDesktop ? '-100vh' : '-120vh',
+                  opacity: 0,
+                  duration: 3,
+                  ease: 'expo.in',
+                },
                 2
               )
 
