@@ -68,11 +68,11 @@ const About = forwardRef((_, ref) => {
         ref={processRef}
         className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-4 opacity-0 md:px-20"
       >
-        <h2 className="process-title mb-12 text-center font-display text-2xl uppercase tracking-tighter text-white md:text-6xl">
+        <h2 className="process-title mb-8 text-center font-display text-2xl uppercase tracking-tighter text-white md:mb-12 md:text-6xl">
           Notre Philosophie
         </h2>
         {/* the grid*/}
-        <div className="grid w-full max-w-7xl grid-cols-1 border-l border-t border-white/10 bg-primary-950/50 backdrop-blur-sm md:grid-cols-3">
+        <div className="grid w-full max-w-2xl grid-cols-1 border-l border-t border-white/10 bg-primary-950/50 md:max-w-7xl md:grid-cols-3">
           {PRINCIPLES.map((item, i) => (
             <div
               key={i}
