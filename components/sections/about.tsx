@@ -87,7 +87,7 @@ const About = forwardRef((_, ref) => {
                   {item.title}
                 </h3>
 
-                <p className="text-[10px] leading-tight text-white/60 md:text-base md:leading-relaxed">
+                <p className="font-sans text-[10px] font-medium leading-tight text-white/60 md:text-base md:leading-relaxed">
                   {item.desc}
                 </p>
               </div>
