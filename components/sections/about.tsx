@@ -72,7 +72,7 @@ const About = forwardRef((_, ref) => {
           Notre Philosophie
         </h2>
 
-        <div className="grid max-h-[90vh] w-full max-w-[90vw] grid-cols-1 border-l border-t border-white/10 bg-primary-950/50 md:h-full md:max-w-7xl md:grid-cols-3">
+        <div className="grid max-h-[90vh] w-full max-w-[90vw] grid-cols-1 border-l border-t border-white/10 bg-primary-950/50 md:max-h-full md:max-w-7xl md:grid-cols-3">
           {PRINCIPLES.map((item, i) => (
             <div
               key={i}
