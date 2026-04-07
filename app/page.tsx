@@ -391,7 +391,7 @@ export default function Home() {
               .from(
                 process.querySelectorAll(steps),
                 {
-                  scale: isDesktop ? 0.8 : 0.95,
+                  scale: isDesktop ? 0.8 : 0.6,
                   y: isDesktop ? 0 : 20,
                   opacity: 0,
                   stagger: 0.2,
