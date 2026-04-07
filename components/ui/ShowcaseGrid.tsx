@@ -1,13 +1,43 @@
 'use client'
 import { forwardRef, useRef, useImperativeHandle } from 'react'
-
+import Image from 'next/image'
 const PROJECTS = [
-  { id: 1, color: 'bg-blue-600' },
-  { id: 2, color: 'bg-emerald-500' },
-  { id: 3, color: 'bg-purple-600' },
-  { id: 4, color: 'bg-orange-500' },
-  { id: 5, color: 'bg-rose-500' },
-  { id: 6, color: 'bg-cyan-600' },
+  {
+    id: 1,
+    title: 'Project Alpha',
+    image: '/images/projects/image.png',
+    video: '/videos/alpha.mp4',
+  },
+  {
+    id: 2,
+    title: 'Project Beta',
+    image: '/images/projects/image.png',
+    video: '/videos/beta.mp4',
+  },
+  {
+    id: 3,
+    title: 'Project Gamma',
+    image: '/images/projects/image.png',
+    video: '/videos/gamma.mp4',
+  },
+  {
+    id: 4,
+    title: 'Project Delta',
+    image: '/images/projects/image.png',
+    video: '/videos/delta.mp4',
+  },
+  {
+    id: 5,
+    title: 'Project Epsilon',
+    image: '/images/projects/image.png',
+    video: '/videos/epsilon.mp4',
+  },
+  {
+    id: 6,
+    title: 'Project Zeta',
+    image: '/images/projects/image.png',
+    video: '/videos/zeta.mp4',
+  },
 ]
 
 const ShowcaseGrid = forwardRef((_, ref) => {
@@ -20,6 +50,8 @@ const ShowcaseGrid = forwardRef((_, ref) => {
     items: itemsRef.current,
     text: textRef.current,
   }))
+
+  const USE_VIDEO = false
 
   return (
     <div
@@ -43,8 +75,31 @@ const ShowcaseGrid = forwardRef((_, ref) => {
             ref={(el) => {
               itemsRef.current[i] = el
             }}
-            className={`aspect-video w-full ${proj.color} rounded-sm shadow-2xl will-change-transform`}
-          />
+            className="relative aspect-video w-full overflow-hidden  bg-neutral-900 "
+          >
+            {/* OPTION A: Image Implementation */}
+            {!USE_VIDEO && (
+              <Image
+                src={proj.image}
+                alt={proj.title}
+                fill
+                className="scale-[1.01] object-cover"
+                sizes="(max-width: 768px) 50vw, 33vw"
+              />
+            )}
+
+            {/* OPTION B: Video Implementation */}
+            {USE_VIDEO && (
+              <video
+                src={proj.video}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="h-full w-full scale-[1.01] object-cover"
+              />
+            )}
+          </div>
         ))}
       </div>
     </div>

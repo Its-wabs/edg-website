@@ -223,9 +223,6 @@ const Hero = () => {
           <div className="mt-8 flex w-full justify-center px-6">
             <button
               ref={ctaRef}
-              onClick={() => {
-                /* scroll to contact or navigate to add later */
-              }}
               className="group relative flex items-center gap-3  bg-accent-500 px-8 py-4 font-sans text-sm font-bold uppercase tracking-wider text-primary-950 transition-transform hover:bg-white active:scale-95"
             >
               Démarrer un projet

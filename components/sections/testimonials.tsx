@@ -1,25 +1,26 @@
 'use client'
 
 import { forwardRef, useImperativeHandle, useRef } from 'react'
+import Image from 'next/image'
 
 const LEFT_DATA = [
   {
     id: 'L01',
     title: 'SH-TATA',
     desc: "EDG has developed 2 sites for us so far and I don't think we would ever outsource our work to anyone other than them.",
-    color: 'bg-accent-200',
+    image: '/images/projects/image.png',
   },
   {
     id: 'L02',
     title: 'SH-TATA',
     desc: "EDG has developed 2 sites for us so far and I don't think we would ever outsource our work to anyone other than them.",
-    color: 'bg-accent-300',
+    image: '/images/projects/image.png',
   },
   {
     id: 'L03',
     title: 'SH-TATA',
     desc: "EDG has developed 2 sites for us so far and I don't think we would ever outsource our work to anyone other than them.",
-    color: 'bg-accent-400',
+    image: '/images/projects/image.png',
   },
 ]
 
@@ -28,19 +29,19 @@ const RIGHT_DATA = [
     id: 'R01',
     title: 'SH-TATA',
     desc: "EDG has developed 2 sites for us so far and I don't think we would ever outsource our work to anyone other than them.",
-    color: 'bg-zinc-500',
+    image: '/images/projects/image.png',
   },
   {
     id: 'R02',
     title: 'SH-TATA',
     desc: "EDG has developed 2 sites for us so far and I don't think we would ever outsource our work to anyone other than them.",
-    color: 'bg-zinc-600',
+    image: '/images/projects/image.png',
   },
   {
     id: 'R03',
     title: 'SH-TATA',
     desc: "EDG has developed 2 sites for us so far and I don't think we would ever outsource our work to anyone other than them.",
-    color: 'bg-zinc-700',
+    image: '/images/projects/image.png',
   },
 ]
 
@@ -84,9 +85,16 @@ const Testimonials = forwardRef((_, ref) => {
               key={testimonial.id}
               className="testimonial-item relative flex flex-col gap-2 md:gap-4"
             >
-              <div
-                className={`absolute bottom-10 left-0 aspect-video w-full md:bottom-24 md:left-20 md:w-[70%] ${testimonial.color} -z-10 opacity-20 blur-2xl md:opacity-40 md:blur-none`}
-              />
+              <div className="absolute bottom-10 left-0 -z-10 aspect-video w-full overflow-hidden bg-neutral-800 md:bottom-24 md:left-20 md:w-[70%]">
+                <Image
+                  src={testimonial.image}
+                  alt={testimonial.title}
+                  fill
+                  className="object-cover opacity-40 grayscale transition-all duration-700 hover:opacity-100 hover:grayscale-0"
+                  sizes="(max-width: 768px) 100vw, 35vw"
+                />
+              </div>
+
               <h2 className="font-display text-xl uppercase leading-[0.9] text-white md:text-4xl">
                 {testimonial.title}
               </h2>
@@ -107,9 +115,16 @@ const Testimonials = forwardRef((_, ref) => {
               key={testimonial.id}
               className="testimonial-item relative flex flex-col gap-2 md:gap-4"
             >
-              <div
-                className={`absolute -left-10 bottom-10 aspect-video w-full md:-left-48 md:bottom-24 md:w-[70%] ${testimonial.color} -z-10 opacity-20 blur-lg md:opacity-40 md:blur-none`}
-              />
+              <div className="absolute -left-10 bottom-10 -z-10 aspect-video w-full overflow-hidden bg-neutral-800 md:-left-48 md:bottom-24 md:w-[70%]">
+                <Image
+                  src={testimonial.image}
+                  alt={testimonial.title}
+                  fill
+                  className="object-cover opacity-40 grayscale transition-all duration-700 hover:opacity-100 hover:grayscale-0"
+                  sizes="(max-width: 768px) 100vw, 35vw"
+                />
+              </div>
+
               <h2 className="font-display text-xl uppercase leading-[0.9] text-white md:text-4xl">
                 {testimonial.title}
               </h2>

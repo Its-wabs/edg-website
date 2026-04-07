@@ -1,13 +1,44 @@
 'use client'
 
-import { useRef, forwardRef, useImperativeHandle } from 'react'
+import { useRef, forwardRef, useImperativeHandle, useState } from 'react'
+import Image from 'next/image'
 
 const PROJECTS = [
-  { id: 1, color: 'bg-blue-600', title: 'Project Alpha' },
-  { id: 2, color: 'bg-emerald-500', title: 'Project Beta' },
-  { id: 3, color: 'bg-purple-600', title: 'Project Gamma' },
-  { id: 4, color: 'bg-orange-500', title: 'Project Delta' },
-  { id: 5, color: 'bg-rose-500', title: 'Project Epsilon' },
+  {
+    id: 1,
+    title: 'Project one',
+    desc: 'Système de design & Branding',
+    image: '/images/projects/image.png',
+    demo: '#',
+  },
+  {
+    id: 2,
+    title: 'Project two',
+    desc: 'Interface de gestion complexe',
+    image: '/images/projects/image.png',
+    demo: '#',
+  },
+  {
+    id: 3,
+    title: 'Project three',
+    desc: 'Expérience voyage immersive',
+    image: '/images/projects/image.png',
+    demo: '#',
+  },
+  {
+    id: 4,
+    title: 'Project four',
+    desc: 'Plateforme E-commerce B2B',
+    image: '/images/projects/image.png',
+    demo: '#',
+  },
+  {
+    id: 5,
+    title: 'Project five',
+    desc: 'Application Saas Enterprise',
+    image: '/images/projects/image.png',
+    demo: '#',
+  },
 ]
 
 const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
@@ -15,11 +46,18 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
   const itemsRef = useRef<(HTMLDivElement | null)[]>([])
   const btnRef = useRef<HTMLButtonElement>(null)
 
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
+  const [isHovered, setIsHovered] = useState(false)
+
   useImperativeHandle(ref, () => ({
     section: sectionRef.current,
     items: itemsRef.current,
     button: btnRef.current,
   }))
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setCursorPos({ x: e.clientX, y: e.clientY })
+  }
 
   return (
     <section
@@ -29,28 +67,70 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
       <div className="relative flex aspect-video w-[90vw] max-w-[1200px] items-center justify-center md:w-[70vw] lg:max-h-[75vh]">
         {PROJECTS.map((proj, i) => (
           <div
+            onMouseMove={handleMouseMove}
             key={proj.id}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             ref={(el) => {
               itemsRef.current[i] = el
             }}
-            className={`absolute inset-0 ${proj.color} flex flex-col justify-end overflow-hidden p-6 will-change-transform md:p-12`}
+            onClick={() => window.open(proj.demo, '_blank')}
+            className="group absolute inset-0 flex cursor-none flex-col justify-end overflow-hidden bg-neutral-900 p-6 will-change-transform md:p-12"
           >
-            {/* Content */}
-            <div className="relative z-10">
-              <span className="mb-[-2rem] block select-none font-display text-[12rem] leading-none text-white/20"></span>
-              <h3 className="font-display text-4xl uppercase tracking-tighter text-white md:text-6xl"></h3>
-            </div>
+            <Image
+              src={proj.image}
+              alt={proj.title}
+              fill
+              className="scale-[1.02] object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-20"
+              sizes="(max-width: 768px) 90vw, 70vw"
+            />
 
-            {/* Hover Circle Placeholder */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 scale-0 rounded-full bg-white opacity-0 mix-blend-difference" />
+            <div className="relative z-10 translate-y-8 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+              <span className="mb-[-1rem] block font-display text-[6rem] leading-none text-white/5 md:text-[10rem]">
+                0{proj.id}
+              </span>
+              <h3 className="font-display text-4xl uppercase text-white md:text-7xl">
+                {proj.title}
+              </h3>
+              <p className="font-sans text-xs uppercase tracking-[0.2em] text-[#20d76c]">
+                {proj.desc}
+              </p>
+            </div>
           </div>
         ))}
+
+        {/* Cursor badge */}
+        {isHovered && (
+          <div
+            className="pointer-events-none fixed z-[100] flex h-24 w-24 items-center justify-center rounded-full bg-[#20d76c]"
+            style={{
+              left: cursorPos.x,
+              top: cursorPos.y,
+              transform: 'translate(50%, 50%)',
+            }}
+          >
+            <div className="flex flex-col items-center text-center">
+              <span className="font-sans text-[10px] font-semibold uppercase leading-tight tracking-widest text-primary-950">
+                View <br /> Live
+              </span>
+              <svg
+                className="mt-1 h-4 w-4 text-primary-950"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+              >
+                <path d="M7 17L17 7M17 7H7M17 7V17" />
+              </svg>
+            </div>
+          </div>
+        )}
       </div>
-      {/* 3. The View All Projects Button */}
+
       <button
         ref={btnRef}
         onClick={onViewAll}
-        className="absolute bottom-10 z-20 translate-y-8 border  border-white/20 px-8 py-4 font-display text-xs uppercase tracking-widest text-white opacity-0 transition-colors duration-300 hover:bg-white hover:text-black md:bottom-[3vh]"
+        className="absolute bottom-10 z-20 border border-white/10 px-8 py-4 font-display text-xs uppercase tracking-widest text-white transition-all hover:bg-white hover:text-primary-950 md:bottom-[3vh]"
       >
         View All Projects
       </button>

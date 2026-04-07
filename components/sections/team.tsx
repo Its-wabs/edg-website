@@ -1,8 +1,9 @@
 'use client'
 
 import { useRef, forwardRef, useImperativeHandle } from 'react'
+import Image from 'next/image'
 
-const TEAM = [{ name: 'Meriem', role: 'CEO', placeholderBg: 'bg-blue-600' }]
+const TEAM = [{ name: 'Meriem', role: 'CEO', image: '/images/edgo.png' }]
 
 const Team = forwardRef((_, ref) => {
   const sectionRef = useRef<HTMLElement>(null)
@@ -56,9 +57,17 @@ const Team = forwardRef((_, ref) => {
               }`}
             >
               {/* Background Color/Image */}
-              <div
-                className={`absolute inset-0 h-full w-full ${member.placeholderBg} transition-all duration-1000 ease-out group-hover:scale-110 md:grayscale md:group-hover:grayscale-0`}
-              />
+              <div className="absolute inset-0 h-full w-full overflow-hidden">
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  fill
+                  className="object-cover transition-all duration-1000 ease-out group-hover:scale-110 md:grayscale md:group-hover:grayscale-0"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                {/* Subtle Gradient Overlay for text legibility */}
+                <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-transparent to-transparent opacity-60 transition-opacity duration-500 md:opacity-0 md:group-hover:opacity-100" />
+              </div>
 
               <div className="absolute inset-x-0 bottom-0 z-20 flex translate-y-0 flex-col justify-end p-6 transition-all duration-500 ease-out md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
                 <h3 className="font-display text-2xl uppercase leading-none tracking-tighter text-white lg:text-3xl">

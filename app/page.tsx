@@ -758,19 +758,19 @@ export default function Home() {
   // back to top
 
   const handleBackToTop = contextSafe(() => {
-    // 1. Force the Navbar back to its "Start" state immediately
+    //  Force the Navbar back to its "Start" state immediately
     if (navTl.current) {
       navTl.current.reverse().pause()
     }
 
-    // 2. Ensure the container is visible
+    //  Ensure the container is visible
     gsap.to(navContainerRef.current, {
       autoAlpha: 1,
       y: 0,
       duration: 0.3,
     })
 
-    // 3. Smooth scroll to top
+    //  Smooth scroll to top
     gsap.to(window, {
       scrollTo: { y: 0 },
       duration: 1.2,
@@ -779,6 +779,58 @@ export default function Home() {
         ScrollTrigger.refresh()
       },
     })
+  })
+
+  const scrollToSection = contextSafe((id: string) => {
+    let sectionElement: HTMLElement | null = null
+
+    switch (id) {
+      case 'solutions':
+        sectionElement = projectsRef.current?.section
+        break
+      case 'about':
+        sectionElement = aboutRef.current?.section
+        break
+      case 'team':
+        sectionElement = teamRef.current?.section
+        break
+      case 'contact':
+        sectionElement = FinalCtaRef.current
+        break
+      case 'services':
+        sectionElement = servicesRef.current?.section
+        break
+      case 'process':
+        sectionElement = aboutRef.current?.process
+
+        break
+    }
+
+    if (sectionElement) {
+      // 2. Find the GSAP ScrollTrigger associated with this specific element
+      const st = ScrollTrigger.getAll().find(
+        (t) => t.trigger === sectionElement
+      )
+
+      if (st) {
+        // scroll back to each section
+        gsap.to(window, {
+          scrollTo: {
+            y: st.start + (id === 'team' ? 2200 : 600),
+            autoKill: false,
+          },
+          duration: 1.5,
+          ease: 'power4.inOut',
+        })
+      } else {
+        // Fallback if ScrollTrigger
+        gsap.to(window, {
+          scrollTo: { y: sectionElement, autoKill: false },
+          duration: 1.5,
+          ease: 'power4.inOut',
+        })
+      }
+    }
   })
 
   return (
@@ -796,6 +848,7 @@ export default function Home() {
         navContainerRef={navContainerRef}
         onBurgerClick={() => setIsMenuOpen(!isMenuOpen)}
         isOpen={isMenuOpen}
+        onNavigate={scrollToSection}
       />
 
       <div ref={heroRef}>
@@ -822,7 +875,11 @@ export default function Home() {
 
       <FinalCTA ref={FinalCtaRef} />
 
-      <Footer ref={footerRef} onScrollToTop={handleBackToTop} />
+      <Footer
+        ref={footerRef}
+        onScrollToTop={handleBackToTop}
+        onNavigate={scrollToSection}
+      />
     </div>
   )
 }

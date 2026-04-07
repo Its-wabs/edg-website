@@ -5,17 +5,58 @@ import Image from 'next/image'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { usePathname, useRouter } from 'next/navigation'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
-const Footer = forwardRef<HTMLElement, { onScrollToTop?: () => void }>(
-  ({ onScrollToTop }, ref) => {
+interface FooterProps {
+  onScrollToTop?: () => void
+  onNavigate: (id: string) => void
+}
+
+const Footer = forwardRef<HTMLElement, FooterProps>(
+  ({ onScrollToTop, onNavigate }, ref) => {
     const titleRef = useRef<HTMLDivElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const bottomRef = useRef<HTMLDivElement>(null)
     const btpRef = useRef<HTMLDivElement>(null)
+
+    const pathname = usePathname()
+    const router = useRouter()
+
+    const isHome = pathname === '/'
+
+    const handleAccueilClick = () => {
+      if (isHome) {
+        return
+      } else {
+        router.push('/')
+      }
+    }
+
+    const navMap: Record<string, string> = {
+      Accueil: 'hero',
+      About: 'about',
+      'Nos Projets': 'solutions',
+      Services: 'services',
+    }
+
+    const handleSecondaryNav = (item: string) => {
+      if (item === 'Email') {
+        window.location.href = 'mailto:contact@edggroupe.com'
+        return
+      }
+
+      const targetPath = `/${item.toLowerCase()}`
+
+      if (pathname === targetPath) {
+        return
+      }
+
+      router.push(targetPath)
+    }
 
     useGSAP(() => {
       const tl = gsap.timeline({
@@ -84,7 +125,7 @@ const Footer = forwardRef<HTMLElement, { onScrollToTop?: () => void }>(
               </h2>
 
               <a
-                href="#contact"
+                href="/contact"
                 className="cta-link group relative w-fit font-sans text-xl font-medium text-white transition-colors hover:text-[#20d76c] md:text-2xl"
               >
                 Envoyer un message
@@ -99,24 +140,32 @@ const Footer = forwardRef<HTMLElement, { onScrollToTop?: () => void }>(
               <ul className="flex flex-col gap-4 font-sans text-base font-semibold uppercase text-white/70 md:text-lg">
                 {['Accueil', 'About', 'Nos Projets', 'Services'].map((item) => (
                   <li key={item}>
-                    <a
-                      href="#"
-                      className="transition-colors hover:text-[#20d76c]"
+                    <button
+                      onClick={() => {
+                        if (item === 'Accueil') {
+                          handleAccueilClick()
+                        } else if (isHome) {
+                          onNavigate(navMap[item])
+                        } else {
+                          router.push(`/#${navMap[item]}`)
+                        }
+                      }}
+                      className="text-left transition-colors hover:text-[#20d76c]"
                     >
                       {item}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
               <ul className="flex flex-col gap-4 font-sans text-base font-semibold uppercase text-white/70 md:text-lg">
-                {['Process', 'Contact', 'Terms', 'Email'].map((item) => (
+                {['Contact', 'Privacy', 'Terms', 'Email'].map((item) => (
                   <li key={item}>
-                    <a
-                      href="#"
-                      className="transition-colors hover:text-[#20d76c]"
+                    <button
+                      onClick={() => handleSecondaryNav(item)}
+                      className="text-left transition-colors hover:text-[#20d76c]"
                     >
                       {item}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>

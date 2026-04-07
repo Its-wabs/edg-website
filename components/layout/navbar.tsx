@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { forwardRef } from 'react'
 
 interface NavBarProps {
@@ -8,10 +9,25 @@ interface NavBarProps {
   navContainerRef: React.RefObject<HTMLDivElement>
   onBurgerClick: () => void
   isOpen: boolean
+  onNavigate: (id: string) => void
 }
 
 const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
-  ({ itemsRef, burgerRef, navContainerRef, onBurgerClick, isOpen }) => {
+  ({
+    itemsRef,
+    burgerRef,
+    navContainerRef,
+    onBurgerClick,
+    isOpen,
+    onNavigate,
+  }) => {
+    const handleLinkClick = (e: React.MouseEvent, id: string) => {
+      e.preventDefault()
+      onNavigate(id)
+    }
+
+    const router = useRouter()
+
     return (
       <div
         ref={navContainerRef}
@@ -27,18 +43,30 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
             </h1>
           </div>
           <div ref={itemsRef} className="hidden items-center gap-14 md:flex">
-            <a href="" className="nav-link">
+            <button
+              onClick={(e) => handleLinkClick(e, 'solutions')}
+              className="nav-link"
+            >
               solutions
-            </a>
-            <a href="" className="nav-link">
+            </button>
+            <button
+              onClick={(e) => handleLinkClick(e, 'about')}
+              className="nav-link"
+            >
               about us
-            </a>
-            <a href="" className="nav-link">
+            </button>
+            <button
+              onClick={(e) => handleLinkClick(e, 'team')}
+              className="nav-link"
+            >
               team
-            </a>
-            <a href="" className="nav-contact">
+            </button>
+            <button
+              onClick={() => router.push('/contact')}
+              className="nav-contact"
+            >
               contactez-nous
-            </a>
+            </button>
           </div>
 
           {/* The menu Icon thats Hidden by default  */}

@@ -3,13 +3,14 @@
 import { useRef, useState, forwardRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import Image from 'next/image'
 
 const PROJECTS = [
-  { id: 1, color: 'bg-blue-600', title: 'Project Alpha' },
-  { id: 2, color: 'bg-emerald-500', title: 'Project Beta' },
-  { id: 3, color: 'bg-purple-600', title: 'Project Gamma' },
-  { id: 4, color: 'bg-orange-500', title: 'Project Delta' },
-  { id: 5, color: 'bg-rose-500', title: 'Project Epsilon' },
+  { id: 1, title: 'Project one', image: '/images/projects/image.png' },
+  { id: 2, title: 'Project two', image: '/images/projects/image.png' },
+  { id: 3, title: 'Project three', image: '/images/projects/image.png' },
+  { id: 4, title: 'Project four', image: '/images/projects/image.png' },
+  { id: 5, title: 'Project five', image: '/images/projects/image.png' },
 ]
 
 const HeroProjects = forwardRef<HTMLDivElement, { isActive: boolean }>(
@@ -84,13 +85,28 @@ const HeroProjects = forwardRef<HTMLDivElement, { isActive: boolean }>(
                 itemsRef.current[i] = el
               }}
               style={getInitialStyles(i)}
-              className={`relative overflow-hidden rounded-sm ${proj.color}`}
+              className="relative overflow-hidden  bg-neutral-900"
             >
-              <div className="absolute inset-0 flex flex-col justify-end whitespace-nowrap p-8">
-                <span className="mb-2 text-8xl font-black leading-none text-white/20"></span>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white"></h3>
+              {/* Actual Image */}
+              <Image
+                src={proj.image}
+                alt={proj.title}
+                fill
+                priority={i < 2}
+                className="object-cover transition-transform duration-700 hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+
+              {/* Content */}
+              <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
+                <span className="mb-2 font-display text-6xl font-black leading-none text-white/10 md:text-8xl">
+                  0{proj.id}
+                </span>
+                <h3 className="font-sans text-xl font-bold uppercase tracking-widest text-white md:text-3xl">
+                  {proj.title}
+                </h3>
               </div>
-              <div className="absolute left-1/2 top-10 flex -translate-x-1/2 items-center justify-center"></div>
             </div>
           ))}
         </div>

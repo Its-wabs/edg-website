@@ -2,43 +2,61 @@
 
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
+import Image from 'next/image'
 
 const PROJECTS = [
-  { id: 1, color: 'bg-blue-600', title: 'Project Alpha', category: 'Branding' },
+  {
+    id: 1,
+    title: 'Project Alpha',
+    category: 'Branding',
+    image: '/images/projects/image.png',
+    demo: '#',
+  },
   {
     id: 2,
-    color: 'bg-emerald-500',
     title: 'Project Beta',
     category: 'Web Design',
+    image: '/images/projects/image.png',
+    demo: '#',
   },
   {
     id: 3,
-    color: 'bg-purple-600',
     title: 'Project Gamma',
     category: 'Mobile App',
+    image: '/images/projects/image.png',
+    demo: '#',
   },
   {
     id: 4,
-    color: 'bg-orange-500',
     title: 'Project Delta',
     category: 'E-Commerce',
+    image: '/images/projects/image.png',
+    demo: '#',
   },
   {
     id: 5,
-    color: 'bg-rose-500',
     title: 'Project Epsilon',
     category: '3D Motion',
+    image: '/images/projects/image.png',
+    demo: '#',
   },
-  { id: 6, color: 'bg-zinc-800', title: 'Project Zeta', category: 'Strategy' },
+  {
+    id: 6,
+    title: 'Project Zeta',
+    category: 'Strategy',
+    image: '/images/projects/image.png',
+    demo: '#',
+  },
 ]
 
 const ProjectsGrid = () => {
   const container = useRef(null)
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
+  const [hoveredId, setHoveredId] = useState<number | null>(null)
 
   useGSAP(
     () => {
-      // 1. Set the perspective for the whole container
       gsap.set('.grid-item', {
         opacity: 0,
         y: 100,
@@ -47,7 +65,6 @@ const ProjectsGrid = () => {
         transformPerspective: 1000,
       })
 
-      // 2. Animate them in with a flip
       gsap.to('.grid-item', {
         opacity: 1,
         y: 0,
@@ -66,6 +83,10 @@ const ProjectsGrid = () => {
     { scope: container }
   )
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setCursorPos({ x: e.clientX, y: e.clientY })
+  }
+
   return (
     <section
       ref={container}
@@ -82,20 +103,67 @@ const ProjectsGrid = () => {
           {PROJECTS.map((proj) => (
             <div
               key={proj.id}
-              className="grid-item group relative aspect-[16/10] overflow-hidden rounded-sm bg-primary-900"
+              onClick={() => window.open(proj.demo, '_blank')}
+              onMouseMove={handleMouseMove}
+              onMouseEnter={() => setHoveredId(proj.id)}
+              onMouseLeave={() => setHoveredId(null)}
+              className="grid-item group relative aspect-[16/10] cursor-none overflow-hidden rounded-sm bg-primary-900"
             >
-              {/* Image / Color Overlay for now */}
-              <div
-                className={`absolute inset-0 ${proj.color} opacity-60 transition-transform duration-1000 ease-out group-hover:scale-105`}
+              {/* Image */}
+              <Image
+                src={proj.image}
+                alt={proj.title}
+                fill
+                className="scale-[1.02] object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-20"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
 
-              <div className="absolute inset-0 z-10 flex flex-col justify-between p-10">
-                <h3 className="font-display text-4xl uppercase leading-none tracking-tighter text-white md:text-5xl"></h3>
+              {/* Content */}
+              <div className="absolute inset-0 z-10 flex flex-col justify-between p-8 md:p-10">
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/30">
+                  0{proj.id}
+                </span>
+
+                <div className="translate-y-4 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                  <h3 className="font-display text-4xl uppercase leading-none tracking-tighter text-white md:text-5xl">
+                    {proj.title}
+                  </h3>
+                  <p className="mt-2 font-sans text-xs uppercase tracking-[0.2em] text-[#20d76c]">
+                    {proj.category}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Cursor badge */}
+      {hoveredId !== null && (
+        <div
+          className="pointer-events-none fixed z-[100] flex h-24 w-24 items-center justify-center rounded-full bg-[#20d76c]"
+          style={{
+            left: cursorPos.x,
+            top: cursorPos.y,
+            transform: 'translate(10px, -70%)',
+          }}
+        >
+          <div className="flex flex-col items-center text-center">
+            <span className="font-sans text-[10px] font-semibold uppercase leading-tight tracking-widest text-primary-950">
+              View <br /> Live
+            </span>
+            <svg
+              className="mt-1 h-4 w-4 text-primary-950"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+            >
+              <path d="M7 17L17 7M17 7H7M17 7V17" />
+            </svg>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
