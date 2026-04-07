@@ -68,34 +68,33 @@ const About = forwardRef((_, ref) => {
         ref={processRef}
         className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-4 opacity-0 md:px-20"
       >
-        <h2 className="process-title mb-8 text-center font-display text-2xl uppercase tracking-tighter text-white md:mb-12 md:text-6xl">
+        <h2 className="process-title mb-4 text-center font-display text-xl uppercase tracking-tighter text-white md:mb-12 md:text-6xl">
           Notre Philosophie
         </h2>
-        {/* the grid*/}
-        <div className="grid w-full max-w-2xl grid-cols-1 border-l border-t border-white/10 bg-primary-950/50 md:max-w-7xl md:grid-cols-3">
+
+        <div className="grid max-h-[90vh] w-full max-w-[90vw] grid-cols-1 border-l border-t border-white/10 bg-primary-950/50 md:h-full md:max-w-7xl md:grid-cols-3">
           {PRINCIPLES.map((item, i) => (
             <div
               key={i}
-              className="step-card flex flex-col gap-4 border-b border-r border-white/10 p-8 transition-colors hover:bg-white/[0.02] md:p-12"
+              className="step-card flex flex-row items-center gap-4 border-b border-r border-white/10 p-4 transition-colors hover:bg-white/[0.02] md:flex-col md:items-start md:gap-4 md:p-12"
             >
-              <span className="font-display text-4xl text-accent-500 md:text-6xl">
+              <span className="font-display text-2xl text-accent-500 md:text-6xl">
                 {item.id}
               </span>
-              <div className="overflow-hidden">
-                {' '}
-                {/* mask for the title */}
-                <h3 className="font-display text-xl uppercase text-white md:text-2xl">
+
+              <div className="flex flex-col gap-1">
+                <h3 className="font-display text-sm uppercase text-white md:text-2xl">
                   {item.title}
                 </h3>
+
+                <p className="text-[10px] leading-tight text-white/60 md:text-base md:leading-relaxed">
+                  {item.desc}
+                </p>
               </div>
-              <p className="text-sm leading-relaxed text-white/60 md:text-base">
-                {item.desc}
-              </p>
             </div>
           ))}
         </div>
       </div>
-
       {/* LAYER 3: STATS */}
       <div
         ref={statsRef}
