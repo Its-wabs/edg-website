@@ -75,17 +75,17 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
               itemsRef.current[i] = el
             }}
             onClick={() => window.open(proj.demo, '_blank')}
-            className="group absolute inset-0 flex cursor-none flex-col justify-end overflow-hidden bg-neutral-900 p-6 will-change-transform md:p-12"
+            className="group absolute inset-0 flex flex-col justify-end overflow-hidden bg-neutral-900 p-6 will-change-transform md:cursor-none md:p-12"
           >
             <Image
               src={proj.image}
               alt={proj.title}
               fill
-              className="scale-[1.02] object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-20"
+              className="scale-[1.02] object-cover opacity-50 transition-all duration-700 md:opacity-100 md:group-hover:scale-105 md:group-hover:opacity-20"
               sizes="(max-width: 768px) 90vw, 70vw"
             />
 
-            <div className="relative z-10 translate-y-8 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+            <div className="relative z-10 opacity-100 md:translate-y-8 md:opacity-0 md:transition-all md:duration-500 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100">
               <span className="mb-[-1rem] block font-display text-[6rem] leading-none text-white/5 md:text-[10rem]">
                 0{proj.id}
               </span>
@@ -102,7 +102,7 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
         {/* Cursor badge */}
         {isHovered && (
           <div
-            className="pointer-events-none fixed z-[100] flex h-24 w-24 items-center justify-center rounded-full bg-[#20d76c]"
+            className="pointer-events-none fixed z-[100] hidden h-24 w-24 items-center justify-center rounded-full bg-[#20d76c] md:flex"
             style={{
               left: cursorPos.x,
               top: cursorPos.y,

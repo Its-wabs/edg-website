@@ -7,6 +7,7 @@ import { useGSAP } from '@gsap/react'
 import HeroProjects from '../ui/hero-projects'
 import ShowcaseGrid from '../ui/ShowcaseGrid'
 import HeroProjectsMobile from '../ui/mobile-hero-projects'
+import { useRouter } from 'next/navigation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -20,6 +21,8 @@ const Hero = () => {
   const ctaRef = useRef<HTMLButtonElement>(null)
 
   const [isMobile, setIsMobile] = useState(false)
+
+  const router = useRouter()
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
@@ -223,6 +226,7 @@ const Hero = () => {
           <div className="mt-8 flex w-full justify-center px-6">
             <button
               ref={ctaRef}
+              onClick={() => router.push('/contact')}
               className="group relative flex items-center gap-3  bg-accent-500 px-8 py-4 font-sans text-sm font-bold uppercase tracking-wider text-primary-950 transition-transform hover:bg-white active:scale-95"
             >
               Démarrer un projet

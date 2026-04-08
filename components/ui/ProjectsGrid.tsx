@@ -107,14 +107,14 @@ const ProjectsGrid = () => {
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setHoveredId(proj.id)}
               onMouseLeave={() => setHoveredId(null)}
-              className="grid-item group relative aspect-[16/10] cursor-none overflow-hidden rounded-sm bg-primary-900"
+              className="grid-item group relative aspect-[16/10] overflow-hidden rounded-sm bg-primary-900 md:cursor-none"
             >
               {/* Image */}
               <Image
                 src={proj.image}
                 alt={proj.title}
                 fill
-                className="scale-[1.02] object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-20"
+                className="scale-[1.02] object-cover opacity-50 transition-all duration-700 md:opacity-100 md:group-hover:scale-105 md:group-hover:opacity-20"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
 
@@ -124,7 +124,7 @@ const ProjectsGrid = () => {
                   0{proj.id}
                 </span>
 
-                <div className="translate-y-4 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                <div className="opacity-100 md:translate-y-4 md:opacity-0 md:transition-all md:duration-500 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100">
                   <h3 className="font-display text-4xl uppercase leading-none tracking-tighter text-white md:text-5xl">
                     {proj.title}
                   </h3>
@@ -141,7 +141,7 @@ const ProjectsGrid = () => {
       {/* Cursor badge */}
       {hoveredId !== null && (
         <div
-          className="pointer-events-none fixed z-[100] flex h-24 w-24 items-center justify-center rounded-full bg-[#20d76c]"
+          className="pointer-events-none fixed z-[100] hidden h-24 w-24 items-center justify-center rounded-full bg-[#20d76c] md:flex"
           style={{
             left: cursorPos.x,
             top: cursorPos.y,
