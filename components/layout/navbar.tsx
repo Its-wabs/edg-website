@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation'
 import { forwardRef } from 'react'
 
 interface NavBarProps {
-  itemsRef: React.RefObject<HTMLDivElement>
-  burgerRef: React.RefObject<HTMLDivElement>
+  itemsRef?: React.RefObject<HTMLDivElement>
+  burgerRef?: React.RefObject<HTMLDivElement>
   navContainerRef: React.RefObject<HTMLDivElement>
-  onBurgerClick: () => void
-  isOpen: boolean
+  onBurgerClick?: () => void
+  isOpen?: boolean
   onNavigate: (id: string) => void
 }
 
@@ -34,7 +34,10 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
         className="navbar fixed top-6 z-[100] flex w-full items-center justify-center rounded-lg border-none border-transparent"
       >
         <nav className="flex w-[90vw] items-center justify-between">
-          <div className="logo flex cursor-pointer items-center justify-center gap-1">
+          <div
+            onClick={() => router.push('/')}
+            className="logo flex cursor-pointer items-center justify-center gap-1"
+          >
             <span className="text-center font-display text-display-sm uppercase text-[#20d76c]">
               I
             </span>
@@ -69,7 +72,7 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
             </button>
           </div>
 
-          {/* The menu Icon thats Hidden by default  */}
+          {/* The menu Icon Hidden by default  */}
           <div
             ref={burgerRef}
             onClick={onBurgerClick}

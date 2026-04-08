@@ -16,6 +16,29 @@ interface FooterProps {
   onNavigate: (id: string) => void
 }
 
+const SOCIAL_LINKS = [
+  {
+    name: 'LinkedIn',
+    link: 'https://www.linkedin.com/company/edg',
+    target: '_blank',
+  },
+  {
+    name: 'Instagram',
+    link: 'https://www.instagram.com/edg',
+    target: '_blank',
+  },
+  {
+    name: 'Facebook',
+    link: 'https://www.facebook.com/edg',
+    target: '_blank',
+  },
+  {
+    name: 'GitHub',
+    link: 'https://github.com/edg',
+    target: '_blank',
+  },
+]
+
 const Footer = forwardRef<HTMLElement, FooterProps>(
   ({ onScrollToTop, onNavigate }, ref) => {
     const titleRef = useRef<HTMLDivElement>(null)
@@ -199,13 +222,14 @@ const Footer = forwardRef<HTMLElement, FooterProps>(
             className="flex w-[90vw] flex-col gap-6 pt-8 md:flex-row md:justify-between"
           >
             <div className="flex flex-wrap gap-6 font-sans text-sm font-medium text-white/60">
-              {['LinkedIn', 'Twitter', 'Facebook', 'Instagram'].map((s) => (
+              {SOCIAL_LINKS.map((s) => (
                 <a
-                  key={s}
-                  href="#"
+                  key={s.name}
+                  href={s.link}
+                  target={s.target}
                   className="transition-colors hover:text-white"
                 >
-                  {s}
+                  {s.name}
                 </a>
               ))}
             </div>

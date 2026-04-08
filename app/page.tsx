@@ -19,6 +19,7 @@ import Team from '@/components/sections/team'
 import Footer from '@/components/sections/footer'
 import FinalCTA from '@/components/sections/finalCTA'
 import Menu from '@/components/layout/menu'
+import { useRouter } from 'next/navigation'
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
@@ -41,6 +42,8 @@ export default function Home() {
   const navBurgerRef = useRef<HTMLDivElement>(null)
   const navContainerRef = useRef<HTMLDivElement>(null)
   const navTl = useRef<gsap.core.Timeline | null>(null)
+
+  const router = useRouter()
 
   useEffect(() => {
     if (typeof window !== 'undefined')
@@ -833,6 +836,14 @@ export default function Home() {
     }
   })
 
+  const handleMenuNavigation = (id: string) => {
+    if (id === 'contact') {
+      router.push('/contact')
+    } else {
+      scrollToSection(id)
+    }
+  }
+
   return (
     <div
       ref={mainContainer}
@@ -840,7 +851,11 @@ export default function Home() {
     >
       <PreLoad onComplete={() => setPreloaderDone(true)} />
 
-      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+      <Menu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        onNavigate={handleMenuNavigation}
+      />
 
       <NavBar
         itemsRef={navItemsRef}

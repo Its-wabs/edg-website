@@ -9,22 +9,22 @@ import {
   LinkedinLogoIcon,
 } from '@phosphor-icons/react'
 
+// IDs used in Home page scrollToSection logic
 const MENU_LINKS = [
-  { label: 'Solutions', href: '#solutions' },
-  { label: 'About Us', href: '#about' },
-  { label: 'Team', href: '#team' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Solutions', id: 'solutions' },
+  { label: 'A Propos', id: 'about' },
+  { label: 'Equipe', id: 'team' },
+  { label: 'Contact Nous', id: 'contact' },
 ]
 
-export default function Menu({
-  isOpen,
-  onClose,
-}: {
+interface MenuProps {
   isOpen: boolean
   onClose: () => void
-}) {
-  const container = useRef(null)
+  onNavigate: (id: string) => void
+}
 
+export default function Menu({ isOpen, onClose, onNavigate }: MenuProps) {
+  const container = useRef(null)
   const linksRef = useRef<HTMLDivElement[]>([])
 
   useGSAP(
@@ -36,7 +36,6 @@ export default function Menu({
           ease: 'power4.inOut',
         })
 
-        // The GSAP entrance
         gsap.fromTo(
           linksRef.current,
           { y: 120, opacity: 0 },
@@ -60,6 +59,14 @@ export default function Menu({
     { dependencies: [isOpen], scope: container }
   )
 
+  const handleLinkClick = (id: string) => {
+    onClose()
+
+    setTimeout(() => {
+      onNavigate(id)
+    }, 300)
+  }
+
   return (
     <div
       ref={container}
@@ -79,50 +86,48 @@ export default function Menu({
               }}
               className="relative"
             >
-              <a
-                href={link.href}
-                onClick={onClose}
-                className="relative block font-display text-5xl  font-black uppercase leading-none tracking-tight text-white md:text-7xl"
+              <button
+                onClick={() => handleLinkClick(link.id)}
+                className="relative block w-full text-center font-display text-5xl font-black uppercase leading-none tracking-tight text-white md:text-7xl"
               >
                 {/* LAYER 1: Default Text */}
-                <span className="ease-[0.76, 0, 0.24, 1] block transition-transform duration-500 group-hover:-translate-y-full">
+                <span className="block transition-transform duration-500 ease-[0.76,0,0.24,1] group-hover:-translate-y-full">
                   {link.label}
                 </span>
 
-                {/* LAYER 2: Hover Text  */}
-                <span className="ease-[0.76, 0, 0.24, 1] absolute inset-0 block translate-y-full italic text-accent-500 transition-transform duration-500 group-hover:translate-y-0">
+                {/* LAYER 2: Hover Text (The Green/Accent layer) */}
+                <span className="absolute inset-0 block translate-y-full italic text-[#20d76c] transition-transform duration-500 ease-[0.76,0,0.24,1] group-hover:translate-y-0">
                   {link.label}
                 </span>
-              </a>
+              </button>
             </div>
           </div>
         ))}
       </nav>
 
       {/* FOOTER ELEMENTS */}
-      <div className="absolute bottom-12 left-6 right-6 flex items-end justify-between pt-8 md:left-20  md:right-20">
+      <div className="absolute bottom-12 left-6 right-6 flex items-end justify-between pt-8 md:left-20 md:right-20">
         <div className="flex gap-6">
           <a
             href="#"
-            className="text-white transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:text-accent-500"
+            className="text-white transition-all duration-300 hover:-translate-y-1 hover:text-[#20d76c]"
           >
             <LinkedinLogoIcon size={24} />
           </a>
           <a
             href="#"
-            className="text-white transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:text-accent-500"
+            className="text-white transition-all duration-300 hover:-translate-y-1 hover:text-[#20d76c]"
           >
             <InstagramLogoIcon size={24} />
           </a>
           <a
             href="#"
-            className="text-white transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:text-accent-500"
+            className="text-white transition-all duration-300 hover:-translate-y-1 hover:text-[#20d76c]"
           >
             <FacebookLogoIcon size={24} />
           </a>
         </div>
-
-        <div className="pointer-events-none text-right font-sans">
+        <div className="text-right font-sans">
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/30">
             Based in
           </p>
