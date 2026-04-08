@@ -1,6 +1,8 @@
+import { useRouter } from 'next/navigation'
 import { forwardRef } from 'react'
 
 const FinalCTA = forwardRef<HTMLElement>((_, ref) => {
+  const router = useRouter()
   return (
     <section
       ref={ref}
@@ -16,7 +18,10 @@ const FinalCTA = forwardRef<HTMLElement>((_, ref) => {
           nos partenaires vers l excellence digitale.
         </p>
 
-        <button className="cta-button group relative mb-6 flex items-center gap-6 bg-white px-10 py-5 font-display text-xl text-black transition-all hover:bg-primary-950 hover:text-white">
+        <button
+          onClick={() => router.push('/contact')}
+          className="cta-button group relative mb-6 flex items-center gap-6 bg-white px-10 py-5 font-display text-xl text-black transition-all hover:bg-primary-950 hover:text-white"
+        >
           <span className="uppercase tracking-widest">Réserver un appel</span>
           <span className="text-2xl transition-transform group-hover:translate-x-2">
             →

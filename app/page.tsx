@@ -59,7 +59,7 @@ export default function Home() {
 
   const { contextSafe } = useGSAP(
     () => {
-      if (!preloaderDone || !projectsRef.current) return
+      if (!preloaderDone || !projectsRef.current || showGrid) return
 
       ScrollTrigger.config({
         ignoreMobileResize: true,
@@ -124,8 +124,6 @@ export default function Home() {
                     z: (i: number) => (index - i) * (isDesktop ? -40 : -25),
                     y: (i: number) => (index - i) * (isDesktop ? -15 : -10),
                     scale: (i: number) => 1 - (index - i) * 0.03,
-                    filter: (i: number) =>
-                      `brightness(${1 - (index - i) * 0.15})`,
                     duration: 0.8,
                     ease: 'power2.inOut',
                     overwrite: 'auto',
@@ -704,7 +702,7 @@ export default function Home() {
       )
 
       return () => {
-        gsap.killTweensOf('.reveal-text')
+        mm.revert()
         ScrollTrigger.getAll().forEach((t) => t.kill())
       }
     },
@@ -712,33 +710,34 @@ export default function Home() {
   )
 
   const handleViewAll = contextSafe(() => {
+    // Safety check in case ref is lost
+    if (!projectsRef.current) return
+
     const cards = projectsRef.current.items
     const section = projectsRef.current.section
     const btn = projectsRef.current.button
-
-    //  Get the height of the Hero. where the Project Grid will actually begin.
     const heroHeight = heroRef.current?.offsetHeight || 0
 
     const scatterTl = gsap.timeline({
       onComplete: () => {
-        //  Kill the project trigger
+        // 1. Kill only the ScrollTriggers specifically for this pinned section
         ScrollTrigger.getAll().forEach((t) => {
           if (t.trigger === section) t.kill()
         })
 
-        // Swap to Grid
+        // 2. State swap (toggling CSS visibility via your JSX)
         setShowGrid(true)
 
-        //  Scroll to the bottom of the Hero instantly.
+        // 3. Instant repositioning
         window.scrollTo({
           top: heroHeight,
           behavior: 'instant',
         })
 
-        //  Force a refresh so the Services section knows its new position
+        // 4. Force global recalculation
         setTimeout(() => {
-          ScrollTrigger.refresh(true)
-        }, 10)
+          ScrollTrigger.refresh()
+        }, 50)
       },
     })
 
@@ -747,23 +746,20 @@ export default function Home() {
       .to(
         cards,
         {
-          x: () => (Math.random() - 0.5) * window.innerWidth * 2.5,
-          y: () => (Math.random() - 0.5) * window.innerHeight * 2.5,
+          x: () => (Math.random() - 0.5) * window.innerWidth * 2,
+          y: () => (Math.random() - 0.5) * window.innerHeight * 2,
           rotation: () => (Math.random() - 0.5) * 180,
           opacity: 0,
           scale: 0,
           duration: 0.8,
-          stagger: {
-            amount: 0.3,
-            from: 'end',
-          },
+          stagger: { amount: 0.3, from: 'end' },
           ease: 'power3.in',
         },
         0
       )
-      .to(section, { opacity: 0, duration: 0.4 }, '-=0.2')
+      // Fade the section out so it doesn't block the grid
+      .to(section, { autoAlpha: 0, duration: 0.4 }, '-=0.2')
   })
-
   // back to top
 
   const handleBackToTop = contextSafe(() => {
@@ -877,9 +873,13 @@ export default function Home() {
       </div>
 
       <div className="relative min-h-screen bg-primary-950">
-        {!showGrid ? (
+        {/* Always keep Projects in DOM but hide it when showGrid is true */}
+        <div style={{ display: showGrid ? 'none' : 'block' }}>
           <Projects ref={projectsRef} onViewAll={handleViewAll} />
-        ) : (
+        </div>
+
+        {/* Only mount the Grid when requested to keep initial load light */}
+        {showGrid && (
           <div className="relative z-30">
             <ProjectsGrid />
           </div>
