@@ -38,7 +38,7 @@ export default function Menu({ isOpen, onClose, onNavigate }: MenuProps) {
 
         gsap.fromTo(
           linksRef.current,
-          { y: 120, opacity: 0 },
+          { y: 130, opacity: 0 },
           {
             y: 0,
             opacity: 1,

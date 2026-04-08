@@ -108,7 +108,7 @@ const ContactPage = () => {
 
       {/*HEADER */}
       <section className="px-6 pt-32 md:px-20 md:pt-40">
-        <div className="flex items-end justify-between pb-8">
+        <div className="flex items-end justify-between gap-2 pb-8 md:gap-0">
           <h1 className="reveal-text font-display text-5xl uppercase md:text-8xl">
             Contact
           </h1>

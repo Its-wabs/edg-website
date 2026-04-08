@@ -124,7 +124,8 @@ export default function Home() {
                     z: (i: number) => (index - i) * (isDesktop ? -40 : -25),
                     y: (i: number) => (index - i) * (isDesktop ? -15 : -10),
                     scale: (i: number) => 1 - (index - i) * 0.03,
-                    brightness: (i: number) => 1 - (index - i) * 0.15,
+                    filter: (i: number) =>
+                      `brightness(${1 - (index - i) * 0.15})`,
                     duration: 0.8,
                     ease: 'power2.inOut',
                     overwrite: 'auto',
@@ -701,6 +702,11 @@ export default function Home() {
           }
         }
       )
+
+      return () => {
+        gsap.killTweensOf('.reveal-text')
+        ScrollTrigger.getAll().forEach((t) => t.kill())
+      }
     },
     { scope: mainContainer, dependencies: [preloaderDone, showGrid] }
   )

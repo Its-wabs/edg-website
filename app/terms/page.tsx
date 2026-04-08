@@ -113,7 +113,7 @@ const TermsPage = () => {
 
       {/* HEADER */}
       <section className="flex flex-col items-center px-6 pb-20 pt-40 text-center md:pt-52">
-        <h1 className="reveal-header font-display text-6xl font-black uppercase tracking-tighter md:text-9xl">
+        <h1 className="reveal-header font-display text-5xl font-black uppercase tracking-tighter md:text-9xl">
           TERMS <span className="text-[#20d76c]">&</span>
           <br />
           CONDITIONS
