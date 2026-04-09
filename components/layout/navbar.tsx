@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { forwardRef } from 'react'
 
 interface NavBarProps {
@@ -21,12 +21,16 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
     isOpen,
     onNavigate,
   }) => {
+    const router = useRouter()
+    const pathname = usePathname()
+
+    // Check if we are on the Home page
+    const isHome = pathname === '/'
+
     const handleLinkClick = (e: React.MouseEvent, id: string) => {
       e.preventDefault()
       onNavigate(id)
     }
-
-    const router = useRouter()
 
     return (
       <div
@@ -45,25 +49,49 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
               edg
             </h1>
           </div>
+
           <div ref={itemsRef} className="hidden items-center gap-14 md:flex">
-            <button
-              onClick={(e) => handleLinkClick(e, 'solutions')}
-              className="nav-link"
-            >
-              solutions
-            </button>
-            <button
-              onClick={(e) => handleLinkClick(e, 'about')}
-              className="nav-link"
-            >
-              about us
-            </button>
-            <button
-              onClick={(e) => handleLinkClick(e, 'team')}
-              className="nav-link"
-            >
-              team
-            </button>
+            {isHome ? (
+              /* ── HOME PATH LINKS ── */
+              <>
+                <button
+                  onClick={(e) => handleLinkClick(e, 'solutions')}
+                  className="nav-link"
+                >
+                  solutions
+                </button>
+                <button
+                  onClick={(e) => handleLinkClick(e, 'about')}
+                  className="nav-link"
+                >
+                  about us
+                </button>
+                <button
+                  onClick={(e) => handleLinkClick(e, 'team')}
+                  className="nav-link"
+                >
+                  team
+                </button>
+              </>
+            ) : (
+              /* ── OTHER PAGES LINKS ── */
+              <>
+                <button
+                  onClick={() => router.push('/projects')}
+                  className="nav-link"
+                >
+                  projects
+                </button>
+                <button
+                  onClick={() => router.push('/terms')}
+                  className="nav-link"
+                >
+                  terms
+                </button>
+              </>
+            )}
+
+            {/* Always show Contact CTA */}
             <button
               onClick={() => router.push('/contact')}
               className="nav-contact"
@@ -72,11 +100,11 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
             </button>
           </div>
 
-          {/* The menu Icon Hidden by default  */}
+          {/* The menu Icon */}
           <div
             ref={burgerRef}
             onClick={onBurgerClick}
-            className="scale-1 absolute  right-[5vw] flex cursor-pointer flex-col gap-1.5 p-2 md:scale-0"
+            className="scale-1 absolute right-[5vw] flex cursor-pointer flex-col gap-1.5 p-2 md:scale-0"
           >
             <div
               className={`h-[3px] w-8 rounded-full bg-white transition-transform duration-300 ${isOpen ? 'translate-y-[9px] rotate-45' : ''}`}

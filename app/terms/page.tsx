@@ -8,6 +8,7 @@ import { useRouter, usePathname } from 'next/navigation'
 
 import NavBar from '@/components/layout/navbar'
 import Footer from '@/components/sections/footer'
+import Menu from '@/components/layout/menu'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -67,6 +68,27 @@ const TermsPage = () => {
     }
   }
 
+  const handleMenuNavigation = (id: string) => {
+    setIsMenuOpen(false)
+
+    if (id === 'hero' || id === 'home') {
+      router.push('/')
+      return
+    }
+
+    const pages = ['projects', 'contact', 'terms']
+
+    if (pages.includes(id)) {
+      router.push(`/${id}`)
+    } else {
+      if (pathname === '/') {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        router.push(`/#${id}`)
+      }
+    }
+  }
+
   useGSAP(
     () => {
       const tl = gsap.timeline({
@@ -104,6 +126,12 @@ const TermsPage = () => {
       ref={containerRef}
       className="bg-primary-950 text-white selection:bg-[#20d76c] selection:text-primary-950"
     >
+      <Menu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        onNavigate={handleMenuNavigation}
+      />
+
       <NavBar
         navContainerRef={navContainerRef}
         onBurgerClick={() => setIsMenuOpen(!isMenuOpen)}

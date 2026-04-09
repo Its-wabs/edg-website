@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { usePathname } from 'next/navigation'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/all'
+import Menu from '@/components/layout/menu'
 
 const SOCIAL_LINKS = [
   {
@@ -56,6 +57,27 @@ const ContactPage = () => {
     }
   }
 
+  const handleMenuNavigation = (id: string) => {
+    setIsMenuOpen(false)
+
+    if (id === 'hero' || id === 'home') {
+      router.push('/')
+      return
+    }
+
+    const pages = ['projects', 'contact', 'terms']
+
+    if (pages.includes(id)) {
+      router.push(`/${id}`)
+    } else {
+      if (pathname === '/') {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        router.push(`/#${id}`)
+      }
+    }
+  }
+
   useGSAP(
     () => {
       //  Entrance Animations
@@ -97,6 +119,11 @@ const ContactPage = () => {
       ref={containerRef}
       className="bg-primary-950 text-white selection:bg-[#20d76c] selection:text-primary-950"
     >
+      <Menu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        onNavigate={handleMenuNavigation}
+      />
       <NavBar
         itemsRef={navItemsRef}
         burgerRef={navBurgerRef}
