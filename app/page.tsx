@@ -11,7 +11,6 @@ import NavBar from '@/components/layout/navbar'
 import Hero from '@/components/sections/hero'
 import PreLoad from '@/components/ui/preloader'
 import Projects from '@/components/sections/projects'
-import ProjectsGrid from '@/components/ui/ProjectsGrid'
 import Services from '@/components/sections/services'
 import Testimonials from '@/components/sections/testimonials'
 import About from '@/components/sections/about'
@@ -20,13 +19,18 @@ import Footer from '@/components/sections/footer'
 import FinalCTA from '@/components/sections/finalCTA'
 import Menu from '@/components/layout/menu'
 import { useRouter } from 'next/navigation'
+import ProjectsGrid from '@/components/ui/ProjectsGrid'
+import { setupAboutAnimation } from '@/lib/animations/aboutAnimation'
+import { setupTeamAnimation } from '@/lib/animations/teamAnimation'
+import { setupFinalCTAanimation } from '@/lib/animations/finalCTA-animation'
+import { setupTestimonialsAnimation } from '@/lib/animations/testimonialsAnimation'
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
 export default function Home() {
   const [preloaderDone, setPreloaderDone] = useState(false)
-  const [showGrid, setShowGrid] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [showGrid, setShowGrid] = useState(false)
 
   const mainContainer = useRef(null)
   const heroRef = useRef<HTMLDivElement>(null)
@@ -41,17 +45,17 @@ export default function Home() {
   const navItemsRef = useRef<HTMLDivElement>(null)
   const navBurgerRef = useRef<HTMLDivElement>(null)
   const navContainerRef = useRef<HTMLDivElement>(null)
-  const navTl = useRef<gsap.core.Timeline | null>(null)
+  const heroNavTl = useRef<gsap.core.Timeline | null>(null)
+  const ctaNavTl = useRef<gsap.core.Timeline | null>(null)
+
+  const scrollToSectionRef = useRef<(id: string, isInstant?: boolean) => void>(
+    () => {}
+  )
 
   const router = useRouter()
 
   useEffect(() => {
-    if (typeof window !== 'undefined')
-      window.history.scrollRestoration = 'manual'
-    document.body.style.overflow = preloaderDone ? 'auto' : 'hidden'
-  }, [preloaderDone])
-
-  useEffect(() => {
+    window.history.scrollRestoration = 'manual'
     // Lock scroll if preloader is active OR menu is open
     document.body.style.overflow =
       preloaderDone && !isMenuOpen ? 'auto' : 'hidden'
@@ -91,6 +95,7 @@ export default function Home() {
 
             const projectsTl = gsap.timeline({
               scrollTrigger: {
+                id: 'projects-section',
                 trigger: projectSection,
                 start: 'top top',
                 end: `+=${cards.length * (isDesktop ? 150 : 120)}%`,
@@ -169,7 +174,7 @@ export default function Home() {
                 '-=0.2'
               )
 
-            navTl.current = navMorphTl
+            heroNavTl.current = navMorphTl
 
             ScrollTrigger.create({
               trigger: heroRef.current,
@@ -208,6 +213,7 @@ export default function Home() {
 
             const servicesTl = gsap.timeline({
               scrollTrigger: {
+                id: 'services-section',
                 trigger: sSection,
                 start: 'top top',
                 end: `+=${sCards.length * 100 + 150}%`,
@@ -267,350 +273,24 @@ export default function Home() {
           // TESTIMONIALS SECTION
 
           if (testimonialsRef.current) {
-            const tSection = testimonialsRef.current.section
-            const tTitle = testimonialsRef.current.title
-            const tLeft = testimonialsRef.current.leftCol
-            const tRight = testimonialsRef.current.rightCol
-
-            // Initial States
-            gsap.set(tTitle, { opacity: 0 })
-
-            gsap.set(tLeft, { y: '180vh' })
-            gsap.set(tRight, { y: '150vh' })
-
-            const testimonialsTl = gsap.timeline({
-              scrollTrigger: {
-                trigger: tSection,
-                start: 'top top',
-                end: '+=500%',
-                pin: true,
-                scrub: 1,
-              },
-            })
-
-            testimonialsTl
-              // PHASE 1: Title Reveal
-              .to(tTitle, {
-                opacity: 1,
-                scale: 1,
-                duration: 2,
-                ease: 'power2.out',
-              })
-              // PHASE 2: Title scales down
-              .to(tTitle, {
-                scale: isDesktop ? 0.8 : 0.6,
-                opacity: isDesktop ? 1 : 0.5,
-                filter: isDesktop ? 'blur(0px)' : 'blur(1px)',
-                duration: 1,
-                ease: 'power2.inOut',
-              })
-
-              // PHASE 3: The Double Train
-              .to(
-                tLeft,
-                {
-                  y: '-150vh',
-                  duration: 10,
-                  ease: 'none',
-                },
-                'train'
-              )
-              .to(
-                tRight,
-                {
-                  y: '-180vh',
-                  duration: 10,
-                  ease: 'none',
-                },
-                'train'
-              )
+            setupTestimonialsAnimation(testimonialsRef, isDesktop)
           }
 
           // ABOUT SECTION
 
           if (aboutRef.current) {
-            const { section, headline, process, stats, steps, numbers } =
-              aboutRef.current
-            const isDesktop = context.conditions?.isDesktop
-
-            const aboutTl = gsap.timeline({
-              scrollTrigger: {
-                trigger: section,
-                start: 'top top',
-                end: isDesktop ? '+=600%' : '+=400%',
-                pin: true,
-                scrub: 1.5,
-                invalidateOnRefresh: true,
-              },
-            })
-
-            // Set initial off-stage positions
-
-            gsap.set([process, stats], { y: '100vh', opacity: 0 })
-
-            aboutTl
-              // PHASE 1: Headline
-              .fromTo(
-                headline.querySelectorAll('.header-title span'),
-                { y: 100, opacity: 0 },
-                { y: 0, opacity: 1, stagger: 0.15, duration: 2 },
-                0
-              )
-              .fromTo(
-                headline.querySelector('.sub-header'),
-                { y: 30, opacity: 0 },
-                { y: 0, opacity: 1, duration: 1.5 },
-                0.5
-              )
-              .to(
-                headline,
-                {
-                  y: isDesktop ? '-100vh' : '-120vh',
-                  opacity: 0,
-                  duration: 3,
-                  ease: 'expo.in',
-                },
-                2
-              )
-
-              // PHASE 2: Process
-              .to(
-                process,
-                {
-                  y: 0,
-                  opacity: 1,
-                  autoAlpha: 1,
-                  duration: 4,
-                  ease: 'expo.out',
-                },
-                3.5
-              )
-              .from(
-                process.querySelector('.process-title'),
-                { opacity: 0, y: 50, duration: 2 },
-                4
-              )
-              .from(
-                process.querySelectorAll(steps),
-                {
-                  scale: isDesktop ? 0.8 : 0.9,
-                  y: isDesktop ? 0 : 20,
-                  opacity: 0,
-                  stagger: 0.2,
-                  duration: 3,
-                },
-                5
-              )
-              .to(
-                process,
-                { y: '-100vh', opacity: 0, duration: 3, ease: 'expo.in' },
-                6
-              )
-
-            // PHASE 3: Stats
-            aboutTl
-              .to(
-                stats,
-                {
-                  y: 0,
-                  opacity: 1,
-                  autoAlpha: 1,
-                  duration: 4,
-                  ease: 'expo.out',
-                },
-                8.5
-              )
-              .from(
-                stats.querySelector('.stats-title'),
-                {
-                  opacity: 0,
-                  y: 50,
-                  duration: 2,
-                },
-                9
-              )
-              .from(
-                numbers,
-                {
-                  textContent: 0,
-                  duration: 3,
-                  ease: 'power2.out',
-                  snap: { textContent: 1 },
-                  stagger: 0.2,
-                  scale: 1.1,
-                },
-                9.5
-              )
-              .to(
-                numbers,
-                {
-                  scale: 1,
-                  duration: 1,
-                  ease: 'back.out(2)',
-                },
-                '-=1'
-              )
+            setupAboutAnimation(aboutRef, isDesktop)
           }
 
           // team
 
           if (teamRef.current) {
-            const { section, bgLetters, bgWordContainer, cards } =
-              teamRef.current
-            const isDesktop = context.conditions?.isDesktop
-
-            if (isDesktop) {
-              // DESKTOP ANIMATION
-              gsap.set(bgLetters, {
-                x: '100vw',
-                y: '100vh',
-                rotation: 45,
-                opacity: 0,
-              })
-              gsap.set(cards, { y: 100, opacity: 0, scale: 0.9 })
-              gsap.set(bgWordContainer, { opacity: 0.4 })
-
-              const teamTl = gsap.timeline({
-                scrollTrigger: {
-                  trigger: section,
-                  start: 'top top',
-                  end: '+=300%',
-                  pin: true,
-                  scrub: 1,
-                  invalidateOnRefresh: true,
-                },
-              })
-
-              teamTl
-                .to(bgLetters, {
-                  x: 0,
-                  y: 0,
-                  rotation: 0,
-                  opacity: 1,
-                  stagger: 0.1,
-                  duration: 3,
-                  ease: 'power3.out',
-                })
-                .to(
-                  bgWordContainer,
-                  {
-                    opacity: 0.02,
-                    scale: 0.95,
-                    duration: 2,
-                    ease: 'power2.inOut',
-                  },
-                  '-=1'
-                )
-                .to(
-                  cards,
-                  {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    stagger: 0.2,
-                    duration: 2,
-                    ease: 'expo.out',
-                  },
-                  '-=0.5'
-                )
-            } else {
-              //  MOBILE: SIMPLE SECTION
-
-              gsap.set([bgLetters, cards, bgWordContainer], {
-                clearProps: 'all',
-              })
-
-              gsap.set(bgLetters, { opacity: 1, x: 0, y: 0, rotation: 0 })
-              gsap.set(cards, { opacity: 1, y: 0, scale: 1 })
-            }
+            setupTeamAnimation(teamRef, isDesktop)
           }
 
           // FINAL CTA SECTION
           if (FinalCtaRef.current && isDesktop) {
-            const section = FinalCtaRef.current
-            const content = section.querySelector('div')
-            const title = section.querySelector('h2')
-            const paras = [
-              section.querySelector('.cta-para-top'),
-              section.querySelector('.cta-para-bottom'),
-            ]
-            const button = section.querySelector('button')
-            const isDesktop = context.conditions?.isDesktop
-
-            //  Initial States
-            gsap.set(content, {
-              scale: isDesktop ? 0.8 : 1,
-              opacity: 0,
-              y: 50,
-            })
-
-            gsap.set(button, {
-              scale: 0.9,
-              opacity: 0,
-            })
-
-            gsap.set(paras, {
-              scale: isDesktop ? 0.8 : 1,
-              opacity: 0,
-              y: 50,
-            })
-
-            const ctaTl = gsap.timeline({
-              scrollTrigger: {
-                trigger: section,
-                start: isDesktop ? 'top top' : 'top 80%',
-                end: isDesktop ? '+=200%' : 'bottom 20%',
-                pin: isDesktop,
-                scrub: 1,
-                invalidateOnRefresh: true,
-              },
-            })
-
-            ctaTl
-              //  Initial reveal
-              .to(content, {
-                scale: 1,
-                opacity: 1,
-                y: 0,
-                duration: 2,
-                ease: 'power2.out',
-              })
-
-              // Title & Paragraph Pop
-              .from(
-                title,
-                {
-                  y: 40,
-                  opacity: 0,
-                  duration: 1,
-                },
-                '-=1'
-              )
-
-              //  The Button reveal
-              .to(
-                button,
-                {
-                  scale: 1,
-                  opacity: 1,
-                  duration: 1.5,
-                  ease: 'back.out',
-                },
-                '-=0.5'
-              )
-
-              .to(
-                paras,
-                {
-                  scale: 1,
-                  opacity: 1,
-                  y: 0,
-                  duration: 1,
-                  stagger: 0.2,
-                  ease: 'power2.out',
-                },
-                '-=0.3'
-              )
+            setupFinalCTAanimation(FinalCtaRef, isDesktop)
           }
 
           if (isDesktop && FinalCtaRef.current) {
@@ -636,7 +316,7 @@ export default function Home() {
                 },
                 '-=0.2'
               )
-            navTl.current = navMorphTl
+            ctaNavTl.current = navMorphTl
             ScrollTrigger.create({
               trigger: FinalCtaRef.current,
               start: 'top top',
@@ -709,6 +389,148 @@ export default function Home() {
     { scope: mainContainer, dependencies: [preloaderDone, showGrid] }
   )
 
+  // back to top
+
+  const handleBackToTop = contextSafe(() => {
+    //  Force the Navbar back to its "Start" state immediately
+    heroNavTl.current?.reverse().pause()
+    ctaNavTl.current?.reverse().pause()
+
+    //  Ensure the container is visible
+    gsap.to(navContainerRef.current, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.3,
+    })
+
+    //  Smooth scroll to top
+    gsap.to(window, {
+      scrollTo: { y: 0 },
+      duration: 1.2,
+      ease: 'power4.inOut',
+      onComplete: () => {
+        ScrollTrigger.refresh()
+      },
+    })
+  })
+
+  const scrollToSection = contextSafe(
+    (id: string, isInstant: boolean = false) => {
+      if (id === 'hero') {
+        handleBackToTop()
+        return
+      }
+
+      let sectionElement: HTMLElement | null = null
+      let scrollPercentage = 0.1
+
+      switch (id) {
+        case 'projects':
+          sectionElement = projectsRef.current?.section
+          break
+        case 'about':
+          sectionElement = aboutRef.current?.section
+          break
+        case 'team':
+          sectionElement = teamRef.current?.section
+          scrollPercentage = 0.8
+          break
+        case 'contact':
+          sectionElement = FinalCtaRef.current
+          break
+        case 'services':
+          sectionElement = servicesRef.current?.section
+          break
+        case 'process':
+          sectionElement = aboutRef.current?.process
+
+          break
+      }
+
+      if (sectionElement) {
+        requestAnimationFrame(() => {
+          const st = ScrollTrigger.getById(`${id}-section`)
+
+          if (st) {
+            const targetY = st.start + (st.end - st.start) * scrollPercentage
+
+            gsap.to(window, {
+              scrollTo: {
+                y: targetY,
+                autoKill: false,
+              },
+              duration: isInstant ? 0 : 1.5,
+              ease: isInstant ? 'none' : 'power4.inOut',
+            })
+          } else {
+            // Fallback
+            gsap.to(window, {
+              scrollTo: { y: sectionElement, autoKill: false },
+              duration: isInstant ? 0 : 1.5,
+              ease: isInstant ? 'none' : 'power4.inOut',
+            })
+          }
+        })
+      }
+    }
+  )
+
+  useEffect(() => {
+    scrollToSectionRef.current = scrollToSection
+  })
+
+  // Hash effect
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '')
+    if (!hash || !preloaderDone) return
+
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh()
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // Resolving the target independently
+          const idToSTMap: Record<string, string> = {
+            projects: 'projects-section',
+            services: 'services-section',
+            about: 'about-section',
+            team: 'team-section',
+          }
+
+          const stId = idToSTMap[hash]
+          const scrollPercentage = hash === 'team' ? 0.8 : 0.2
+
+          if (stId) {
+            const st = ScrollTrigger.getById(stId)
+            if (st) {
+              const targetY = st.start + (st.end - st.start) * scrollPercentage
+              // native scrollTo for instant jump
+              window.scrollTo({ top: targetY, behavior: 'instant' })
+              window.history.replaceState(null, '', window.location.pathname)
+              return
+            }
+          }
+
+          // Fallback for non-pinned sections
+          scrollToSectionRef.current(hash, true)
+          window.history.replaceState(null, '', window.location.pathname)
+        })
+      })
+    }, 200)
+
+    return () => clearTimeout(timer)
+  }, [preloaderDone])
+
+  const handleMenuNavigation = (id: string) => {
+    if (id === 'contact') {
+      router.push('/contact')
+    } else {
+      scrollToSection(id)
+    }
+  }
+
+  // stack to grid animation logic
+
   const handleViewAll = contextSafe(() => {
     // Safety check in case ref is lost
     if (!projectsRef.current) return
@@ -760,91 +582,6 @@ export default function Home() {
       // Fade the section out so it doesn't block the grid
       .to(section, { autoAlpha: 0, duration: 0.4 }, '-=0.2')
   })
-  // back to top
-
-  const handleBackToTop = contextSafe(() => {
-    //  Force the Navbar back to its "Start" state immediately
-    if (navTl.current) {
-      navTl.current.reverse().pause()
-    }
-
-    //  Ensure the container is visible
-    gsap.to(navContainerRef.current, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.3,
-    })
-
-    //  Smooth scroll to top
-    gsap.to(window, {
-      scrollTo: { y: 0 },
-      duration: 1.2,
-      ease: 'power4.inOut',
-      onComplete: () => {
-        ScrollTrigger.refresh()
-      },
-    })
-  })
-
-  const scrollToSection = contextSafe((id: string) => {
-    let sectionElement: HTMLElement | null = null
-
-    switch (id) {
-      case 'solutions':
-        sectionElement = projectsRef.current?.section
-        break
-      case 'about':
-        sectionElement = aboutRef.current?.section
-        break
-      case 'team':
-        sectionElement = teamRef.current?.section
-        break
-      case 'contact':
-        sectionElement = FinalCtaRef.current
-        break
-      case 'services':
-        sectionElement = servicesRef.current?.section
-        break
-      case 'process':
-        sectionElement = aboutRef.current?.process
-
-        break
-    }
-
-    if (sectionElement) {
-      // 2. Find the GSAP ScrollTrigger associated with this specific element
-      const st = ScrollTrigger.getAll().find(
-        (t) => t.trigger === sectionElement
-      )
-
-      if (st) {
-        // scroll back to each section
-        gsap.to(window, {
-          scrollTo: {
-            y: st.start + (id === 'team' ? 2200 : 600),
-            autoKill: false,
-          },
-          duration: 1.5,
-          ease: 'power4.inOut',
-        })
-      } else {
-        // Fallback if ScrollTrigger
-        gsap.to(window, {
-          scrollTo: { y: sectionElement, autoKill: false },
-          duration: 1.5,
-          ease: 'power4.inOut',
-        })
-      }
-    }
-  })
-
-  const handleMenuNavigation = (id: string) => {
-    if (id === 'contact') {
-      router.push('/contact')
-    } else {
-      scrollToSection(id)
-    }
-  }
 
   return (
     <div

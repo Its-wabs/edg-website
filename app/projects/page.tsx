@@ -171,6 +171,21 @@ export default function ProjectsPage() {
 
   useGSAP(
     () => {
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.out', duration: 1 },
+      })
+      tl.from(hugeHeaderRef.current, { y: 100, opacity: 0, stagger: 0.1 })
+        .from(
+          '.grid-reveal-trigger',
+          { y: 100, opacity: 0, transformOrigin: 'left', stagger: 0.1 },
+          '-=0.5'
+        )
+        .from(
+          archiveRef.current,
+          { y: 100, opacity: 0, transformOrigin: 'left', stagger: 0.1 },
+          '-=0.5'
+        )
+
       ScrollTrigger.create({
         trigger: containerRef.current,
         start: 'top -20',
@@ -192,6 +207,7 @@ export default function ProjectsPage() {
         },
       })
     },
+
     { scope: containerRef }
   )
 

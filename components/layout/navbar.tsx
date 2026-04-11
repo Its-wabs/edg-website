@@ -32,6 +32,14 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
       onNavigate(id)
     }
 
+    const handleLogoClick = () => {
+      if (pathname === '/') {
+        onNavigate('hero')
+      } else {
+        router.push('/')
+      }
+    }
+
     return (
       <div
         ref={navContainerRef}
@@ -39,7 +47,7 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
       >
         <nav className="flex w-[90vw] items-center justify-between">
           <div
-            onClick={() => router.push('/')}
+            onClick={handleLogoClick}
             className="logo flex cursor-pointer items-center justify-center gap-1"
           >
             <span className="text-center font-display text-display-sm uppercase text-[#20d76c]">
@@ -55,7 +63,7 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
               /* ── HOME PATH LINKS ── */
               <>
                 <button
-                  onClick={(e) => handleLinkClick(e, 'solutions')}
+                  onClick={(e) => handleLinkClick(e, 'projects')}
                   className="nav-link"
                 >
                   solutions

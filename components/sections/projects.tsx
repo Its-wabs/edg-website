@@ -132,7 +132,7 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
         onClick={onViewAll}
         className="absolute bottom-10 z-20 border border-white/10 px-8 py-4 font-display text-xs uppercase tracking-widest text-white transition-all hover:bg-white hover:text-primary-950 md:bottom-[3vh]"
       >
-        View All Projects
+        View more Projects
       </button>
     </section>
   )

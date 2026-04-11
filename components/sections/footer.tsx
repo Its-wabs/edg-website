@@ -62,8 +62,9 @@ const Footer = forwardRef<HTMLElement, FooterProps>(
     const navMap: Record<string, string> = {
       Accueil: 'hero',
       About: 'about',
-      'Nos Projets': 'solutions',
+      'Nos Projets': 'projects',
       Services: 'services',
+      Team: 'team',
     }
 
     const handleSecondaryNav = (item: string) => {
@@ -168,8 +169,9 @@ const Footer = forwardRef<HTMLElement, FooterProps>(
                         if (item === 'Accueil') {
                           handleAccueilClick()
                         } else if (isHome) {
-                          onNavigate(navMap[item])
+                          onNavigate(navMap[item]) // Internal scroll if already home
                         } else {
+                          // Navigate home with a hash (e.g., /#services)
                           router.push(`/#${navMap[item]}`)
                         }
                       }}

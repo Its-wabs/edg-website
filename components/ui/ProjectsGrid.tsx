@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { useRef, useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 const PROJECTS = [
   {
@@ -52,8 +53,12 @@ const PROJECTS = [
 
 const ProjectsGrid = () => {
   const container = useRef(null)
+  const btnRef = useRef<HTMLButtonElement>(null)
+
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
   const [hoveredId, setHoveredId] = useState<number | null>(null)
+
+  const router = useRouter()
 
   useGSAP(
     () => {
@@ -79,6 +84,12 @@ const ProjectsGrid = () => {
         ease: 'expo.out',
         clearProps: 'all',
       })
+      gsap.from(btnRef.current, {
+        opacity: 0,
+        y: 40,
+        duration: 1,
+        ease: 'expo.out',
+      })
     },
     { scope: container }
   )
@@ -92,7 +103,7 @@ const ProjectsGrid = () => {
       ref={container}
       className="min-h-screen w-full bg-primary-950 px-6 py-24 md:px-12"
     >
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto mb-[10vh] max-w-7xl">
         <div className="grid-item mb-12">
           <h2 className="font-mono text-sm uppercase tracking-[0.2em] text-white/30">
             Index / Selected Works
@@ -164,6 +175,14 @@ const ProjectsGrid = () => {
           </div>
         </div>
       )}
+
+      <button
+        ref={btnRef}
+        onClick={() => router.push('/projects')}
+        className="absolute  bottom-5 left-1/2 z-20 -translate-x-1/2 border border-white/10 px-8 py-4 font-display text-xs uppercase tracking-widest text-white transition-all hover:bg-white hover:text-primary-950 md:bottom-[3vh]"
+      >
+        View All Projects
+      </button>
     </section>
   )
 }
