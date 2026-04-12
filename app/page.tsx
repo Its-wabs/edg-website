@@ -378,6 +378,43 @@ export default function Home() {
               },
             })
           }
+
+          // hash function
+
+          const hash = window.location.hash.replace('#', '')
+          if (hash) {
+            // 1. Force a calculation of all pin spacing
+            ScrollTrigger.refresh()
+
+            // 2. Wait for one "tick" of the GSAP engine to ensure IDs are registered
+            gsap.delayedCall(0.1, () => {
+              const idToSTMap: Record<string, string> = {
+                projects: 'projects-section',
+                services: 'services-section',
+                about: 'about-section',
+                team: 'team-section',
+              }
+
+              const stId = idToSTMap[hash] || `${hash}-section`
+              const st = ScrollTrigger.getById(stId)
+
+              if (st) {
+                const scrollPercentage = hash === 'team' ? 0.8 : 0.1
+                const targetY =
+                  st.start + (st.end - st.start) * scrollPercentage
+
+                window.scrollTo({ top: targetY, behavior: 'instant' })
+              } else {
+                // Fallback if no ST exists
+                const el = document.getElementById(hash)
+                if (el)
+                  window.scrollTo({ top: el.offsetTop, behavior: 'instant' })
+              }
+
+              // Clean the URL
+              window.history.replaceState(null, '', window.location.pathname)
+            })
+          }
         }
       )
 
@@ -393,14 +430,15 @@ export default function Home() {
 
   const handleBackToTop = contextSafe(() => {
     //  Force the Navbar back to its "Start" state immediately
-    heroNavTl.current?.reverse().pause()
-    ctaNavTl.current?.reverse().pause()
+    heroNavTl.current?.progress(0).pause()
+    ctaNavTl.current?.progress(0).pause()
 
     //  Ensure the container is visible
-    gsap.to(navContainerRef.current, {
+    gsap.set([navContainerRef.current, navItemsRef.current], {
       autoAlpha: 1,
       y: 0,
-      duration: 0.3,
+      pointerEvents: 'auto', // Force the interaction back on
+      clearProps: 'all', // Optional: wipes GSAP styles to let CSS take over
     })
 
     //  Smooth scroll to top
@@ -547,7 +585,7 @@ export default function Home() {
           if (t.trigger === section) t.kill()
         })
 
-        // 2. State swap (toggling CSS visibility via your JSX)
+        // 2. State swap
         setShowGrid(true)
 
         // 3. Instant repositioning
