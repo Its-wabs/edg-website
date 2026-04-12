@@ -1,7 +1,8 @@
 'use client'
 
-import { useRef, forwardRef, useImperativeHandle, useState } from 'react'
+import { useRef, forwardRef, useImperativeHandle } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 const PROJECTS = [
   {
@@ -41,23 +42,18 @@ const PROJECTS = [
   },
 ]
 
-const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
+const Projects = forwardRef((_, ref) => {
   const sectionRef = useRef<HTMLDivElement>(null)
   const itemsRef = useRef<(HTMLDivElement | null)[]>([])
   const btnRef = useRef<HTMLButtonElement>(null)
 
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
-  const [isHovered, setIsHovered] = useState(false)
+  const router = useRouter()
 
   useImperativeHandle(ref, () => ({
     section: sectionRef.current,
     items: itemsRef.current,
     button: btnRef.current,
   }))
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setCursorPos({ x: e.clientX, y: e.clientY })
-  }
 
   return (
     <section
@@ -67,15 +63,12 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
       <div className="relative flex aspect-video w-[90vw] max-w-[1200px] items-center justify-center md:w-[70vw] lg:max-h-[75vh]">
         {PROJECTS.map((proj, i) => (
           <div
-            onMouseMove={handleMouseMove}
             key={proj.id}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             ref={(el) => {
               itemsRef.current[i] = el
             }}
             onClick={() => window.open(proj.demo, '_blank')}
-            className="group absolute inset-0 flex flex-col justify-end overflow-hidden bg-neutral-900 p-6 will-change-transform md:cursor-none md:p-12"
+            className="group absolute inset-0 flex flex-col justify-end overflow-hidden bg-neutral-900 p-6 will-change-transform md:cursor-pointer md:p-12"
           >
             <Image
               src={proj.image}
@@ -98,38 +91,11 @@ const Projects = forwardRef(({ onViewAll }: { onViewAll: () => void }, ref) => {
             </div>
           </div>
         ))}
-
-        {/* Cursor badge */}
-        {isHovered && (
-          <div
-            className="pointer-events-none fixed z-[100] hidden h-24 w-24 items-center justify-center rounded-full bg-[#20d76c] md:flex"
-            style={{
-              left: cursorPos.x,
-              top: cursorPos.y,
-              transform: 'translate(50%, 50%)',
-            }}
-          >
-            <div className="flex flex-col items-center text-center">
-              <span className="font-sans text-[10px] font-semibold uppercase leading-tight tracking-widest text-primary-950">
-                View <br /> Live
-              </span>
-              <svg
-                className="mt-1 h-4 w-4 text-primary-950"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-              >
-                <path d="M7 17L17 7M17 7H7M17 7V17" />
-              </svg>
-            </div>
-          </div>
-        )}
       </div>
 
       <button
         ref={btnRef}
-        onClick={onViewAll}
+        onClick={() => router.push('/projects')}
         className="absolute bottom-10 z-20 border border-white/10 px-8 py-4 font-display text-xs uppercase tracking-widest text-white transition-all hover:bg-white hover:text-primary-950 md:bottom-[3vh]"
       >
         View more Projects
