@@ -1,7 +1,9 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { forwardRef } from 'react'
+
+import { useTransitionRouter } from 'next-view-transitions'
 
 interface NavBarProps {
   itemsRef?: React.RefObject<HTMLDivElement>
@@ -13,13 +15,19 @@ interface NavBarProps {
 
 const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
   ({ itemsRef, burgerRef, navContainerRef, onBurgerClick, isOpen }) => {
-    const router = useRouter()
     const pathname = usePathname()
+    const router = useTransitionRouter()
 
     const navigateTo = (path: string) => {
       if (pathname === path) {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         return
       }
+
+      if (isOpen && onBurgerClick) {
+        onBurgerClick()
+      }
+
       router.push(path)
     }
 

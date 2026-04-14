@@ -3,12 +3,13 @@
 import { useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import {
   FacebookLogoIcon,
   InstagramLogoIcon,
   LinkedinLogoIcon,
 } from '@phosphor-icons/react'
+import { useTransitionRouter } from 'next-view-transitions'
 
 const NAV_LINKS = [
   { label: 'Home', path: '/' },
@@ -26,7 +27,7 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
   const container = useRef(null)
   const linksRef = useRef<HTMLDivElement[]>([])
   const pathname = usePathname()
-  const router = useRouter()
+  const router = useTransitionRouter()
 
   useGSAP(
     () => {
@@ -61,15 +62,16 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
   )
 
   const handleLinkClick = (path: string) => {
-    // Close menu immediately
+    if (pathname === path) {
+      onClose()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
     onClose()
+    // Wait for the menu to clear before triggering the route change
     setTimeout(() => {
-      if (pathname === path) {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        return
-      }
       router.push(path)
-    }, 500)
+    }, 650)
   }
 
   return (

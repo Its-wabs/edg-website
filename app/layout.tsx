@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { Montserrat } from 'next/font/google'
 import './globals.css'
+import { ViewTransitions } from 'next-view-transitions'
 
 const peace = localFont({
   src: [
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html>
       <body className={`${peace.variable} ${montserrat.variable} antialiased`}>
-        {children}
+        <ViewTransitions>{children}</ViewTransitions>
       </body>
     </html>
   )
