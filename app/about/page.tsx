@@ -342,10 +342,10 @@ export default function AboutPage() {
         <div className="flex flex-col justify-between gap-12 md:flex-row md:items-end">
           {/* Giant title */}
           <div ref={titleRef} className="flex-1">
-            <div className="mb-3 font-mono text-xs uppercase tracking-[0.3em] text-white/30">
+            <div className="mb-3 font-sans text-xs uppercase tracking-[0.3em] text-white/30">
               {principle.sub}
             </div>
-            <h2 className="font-display text-[4rem] font-black uppercase leading-none tracking-tight text-white md:text-[14rem]">
+            <h2 className="font-display text-[4rem] font-black uppercase leading-none tracking-tight text-white md:text-[9rem]">
               {principle.title}
               <span className="text-[#20d76c]">.</span>
             </h2>
@@ -421,7 +421,7 @@ export default function AboutPage() {
               key={member.name}
               className="group flex flex-col items-center gap-6"
             >
-              <div className="relative h-[60vw] w-[40vw] overflow-hidden bg-white/5 md:h-[40vw] md:w-[24vw] lg:h-[500px] lg:w-[340px]">
+              <div className="relative aspect-square overflow-hidden bg-white/5">
                 <Image
                   src={member.image}
                   alt={member.name}
