@@ -4,7 +4,6 @@ import React, { useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useRouter, usePathname } from 'next/navigation'
 
 import NavBar from '@/components/layout/navbar'
 import Footer from '@/components/sections/footer'
@@ -52,42 +51,11 @@ const TERMS_SECTIONS = [
 ]
 
 const TermsPage = () => {
-  const router = useRouter()
-  const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
   const navContainerRef = useRef<HTMLDivElement>(null)
   const footerRef = useRef<HTMLElement>(null)
-
-  const handleNavigate = (id: string) => {
-    if (pathname === '/terms') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else {
-      router.push(`/#${id}`)
-    }
-  }
-
-  const handleMenuNavigation = (id: string) => {
-    setIsMenuOpen(false)
-
-    if (id === 'hero' || id === 'home') {
-      router.push('/')
-      return
-    }
-
-    const pages = ['projects', 'contact', 'terms']
-
-    if (pages.includes(id)) {
-      router.push(`/${id}`)
-    } else {
-      if (pathname === '/') {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-      } else {
-        router.push(`/#${id}`)
-      }
-    }
-  }
 
   useGSAP(
     () => {
@@ -126,17 +94,12 @@ const TermsPage = () => {
       ref={containerRef}
       className="bg-primary-950 text-white selection:bg-[#20d76c] selection:text-primary-950"
     >
-      <Menu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onNavigate={handleMenuNavigation}
-      />
+      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <NavBar
         navContainerRef={navContainerRef}
         onBurgerClick={() => setIsMenuOpen(!isMenuOpen)}
         isOpen={isMenuOpen}
-        onNavigate={handleNavigate}
       />
 
       {/* HEADER */}
@@ -196,7 +159,6 @@ const TermsPage = () => {
 
       <Footer
         ref={footerRef}
-        onNavigate={handleNavigate}
         onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       />
     </div>

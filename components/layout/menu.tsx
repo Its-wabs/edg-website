@@ -10,35 +10,23 @@ import {
   LinkedinLogoIcon,
 } from '@phosphor-icons/react'
 
-// 1. Define the two different link sets
-const HOME_LINKS = [
-  { label: 'Solutions', id: 'solutions', path: '/#solutions', isHash: true },
-  { label: 'A Propos', id: 'about', path: '/#about', isHash: true },
-  { label: 'Equipe', id: 'team', path: '/#team', isHash: true },
-  { label: 'Contact', id: 'contact', path: '/contact', isHash: false },
+const NAV_LINKS = [
+  { label: 'Home', path: '/' },
+  { label: 'Solutions', path: '/projects' },
+  { label: 'Services', path: '/services' },
+  { label: 'About Us', path: '/about' },
+  { label: 'Contact', path: '/contact' },
 ]
-
-const OTHER_LINKS = [
-  { label: 'Projets', id: 'projects', path: '/projects', isHash: false },
-  { label: 'Conditions', id: 'terms', path: '/terms', isHash: false },
-  { label: 'Home', id: 'hero', path: '/', isHash: false },
-  { label: 'Contact', id: 'contact', path: '/contact', isHash: false },
-]
-
 interface MenuProps {
   isOpen: boolean
   onClose: () => void
-  onNavigate: (id: string) => void
 }
 
-export default function Menu({ isOpen, onClose, onNavigate }: MenuProps) {
+export default function Menu({ isOpen, onClose }: MenuProps) {
   const container = useRef(null)
   const linksRef = useRef<HTMLDivElement[]>([])
   const pathname = usePathname()
   const router = useRouter()
-
-  const isHome = pathname === '/'
-  const activeLinks = isHome ? HOME_LINKS : OTHER_LINKS
 
   useGSAP(
     () => {
@@ -72,17 +60,16 @@ export default function Menu({ isOpen, onClose, onNavigate }: MenuProps) {
     { dependencies: [isOpen], scope: container }
   )
 
-  const handleLinkClick = (link: (typeof HOME_LINKS)[0]) => {
+  const handleLinkClick = (path: string) => {
+    // Close menu immediately
     onClose()
-
-    // Small delay to let the menu start closing before the transition
     setTimeout(() => {
-      if (link.isHash && isHome) {
-        onNavigate(link.id)
-      } else {
-        router.push(link.path)
+      if (pathname === path) {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
       }
-    }, 400)
+      router.push(path)
+    }, 500)
   }
 
   return (
@@ -93,7 +80,7 @@ export default function Menu({ isOpen, onClose, onNavigate }: MenuProps) {
       }`}
     >
       <nav className="flex flex-col items-center gap-6">
-        {activeLinks.map((link, i) => (
+        {NAV_LINKS.map((link, i) => (
           <div
             key={link.label}
             className="group w-full overflow-hidden px-8 py-1"
@@ -105,7 +92,7 @@ export default function Menu({ isOpen, onClose, onNavigate }: MenuProps) {
               className="relative"
             >
               <button
-                onClick={() => handleLinkClick(link)}
+                onClick={() => handleLinkClick(link.path)}
                 className="relative block w-full text-center font-display text-5xl font-black uppercase leading-none tracking-tight text-white md:text-7xl"
               >
                 {/* LAYER 1: Default Text */}
@@ -113,7 +100,7 @@ export default function Menu({ isOpen, onClose, onNavigate }: MenuProps) {
                   {link.label}
                 </span>
 
-                {/* LAYER 2: Hover Text (The Green/Accent layer) */}
+                {/* LAYER 2: Hover Text */}
                 <span className="absolute inset-0 block translate-y-full italic text-[#20d76c] transition-transform duration-500 ease-[0.76,0,0.24,1] group-hover:translate-y-0">
                   {link.label}
                 </span>

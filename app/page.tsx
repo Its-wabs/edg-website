@@ -18,7 +18,6 @@ import Team from '@/components/sections/team'
 import Footer from '@/components/sections/footer'
 import FinalCTA from '@/components/sections/finalCTA'
 import Menu from '@/components/layout/menu'
-import { useRouter } from 'next/navigation'
 import { setupAboutAnimation } from '@/lib/animations/aboutAnimation'
 import { setupTeamAnimation } from '@/lib/animations/teamAnimation'
 import { setupFinalCTAanimation } from '@/lib/animations/finalCTA-animation'
@@ -45,12 +44,6 @@ export default function Home() {
   const navContainerRef = useRef<HTMLDivElement>(null)
   const heroNavTl = useRef<gsap.core.Timeline | null>(null)
   const ctaNavTl = useRef<gsap.core.Timeline | null>(null)
-
-  const scrollToSectionRef = useRef<(id: string, isInstant?: boolean) => void>(
-    () => {}
-  )
-
-  const router = useRouter()
 
   useEffect(() => {
     window.history.scrollRestoration = 'manual'
@@ -376,43 +369,6 @@ export default function Home() {
               },
             })
           }
-
-          // hash function
-
-          const hash = window.location.hash.replace('#', '')
-          if (hash) {
-            // 1. Force a calculation of all pin spacing
-            ScrollTrigger.refresh()
-
-            // 2. Wait for one "tick" of the GSAP engine to ensure IDs are registered
-            gsap.delayedCall(0.1, () => {
-              const idToSTMap: Record<string, string> = {
-                projects: 'projects-section',
-                services: 'services-section',
-                about: 'about-section',
-                team: 'team-section',
-              }
-
-              const stId = idToSTMap[hash] || `${hash}-section`
-              const st = ScrollTrigger.getById(stId)
-
-              if (st) {
-                const scrollPercentage = hash === 'team' ? 0.8 : 0.1
-                const targetY =
-                  st.start + (st.end - st.start) * scrollPercentage
-
-                window.scrollTo({ top: targetY, behavior: 'instant' })
-              } else {
-                // Fallback if no ST exists
-                const el = document.getElementById(hash)
-                if (el)
-                  window.scrollTo({ top: el.offsetTop, behavior: 'instant' })
-              }
-
-              // Clean the URL
-              window.history.replaceState(null, '', window.location.pathname)
-            })
-          }
         }
       )
 
@@ -435,8 +391,6 @@ export default function Home() {
     gsap.set([navContainerRef.current, navItemsRef.current], {
       autoAlpha: 1,
       y: 0,
-      pointerEvents: 'auto', // Force the interaction back on
-      clearProps: 'all', // Optional: wipes GSAP styles to let CSS take over
     })
 
     //  Smooth scroll to top
@@ -450,121 +404,6 @@ export default function Home() {
     })
   })
 
-  const scrollToSection = contextSafe(
-    (id: string, isInstant: boolean = false) => {
-      if (id === 'hero') {
-        handleBackToTop()
-        return
-      }
-
-      let sectionElement: HTMLElement | null = null
-      let scrollPercentage = 0.1
-
-      switch (id) {
-        case 'projects':
-          sectionElement = projectsRef.current?.section
-          break
-        case 'about':
-          sectionElement = aboutRef.current?.section
-          break
-        case 'team':
-          sectionElement = teamRef.current?.section
-          scrollPercentage = 0.8
-          break
-        case 'contact':
-          sectionElement = FinalCtaRef.current
-          break
-        case 'services':
-          sectionElement = servicesRef.current?.section
-          break
-        case 'process':
-          sectionElement = aboutRef.current?.process
-
-          break
-      }
-
-      if (sectionElement) {
-        requestAnimationFrame(() => {
-          const st = ScrollTrigger.getById(`${id}-section`)
-
-          if (st) {
-            const targetY = st.start + (st.end - st.start) * scrollPercentage
-
-            gsap.to(window, {
-              scrollTo: {
-                y: targetY,
-                autoKill: false,
-              },
-              duration: isInstant ? 0 : 1.5,
-              ease: isInstant ? 'none' : 'power4.inOut',
-            })
-          } else {
-            // Fallback
-            gsap.to(window, {
-              scrollTo: { y: sectionElement, autoKill: false },
-              duration: isInstant ? 0 : 1.5,
-              ease: isInstant ? 'none' : 'power4.inOut',
-            })
-          }
-        })
-      }
-    }
-  )
-
-  useEffect(() => {
-    scrollToSectionRef.current = scrollToSection
-  })
-
-  // Hash effect
-  useEffect(() => {
-    const hash = window.location.hash.replace('#', '')
-    if (!hash || !preloaderDone) return
-
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh()
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          // Resolving the target independently
-          const idToSTMap: Record<string, string> = {
-            projects: 'projects-section',
-            services: 'services-section',
-            about: 'about-section',
-            team: 'team-section',
-          }
-
-          const stId = idToSTMap[hash]
-          const scrollPercentage = hash === 'team' ? 0.8 : 0.2
-
-          if (stId) {
-            const st = ScrollTrigger.getById(stId)
-            if (st) {
-              const targetY = st.start + (st.end - st.start) * scrollPercentage
-              // native scrollTo for instant jump
-              window.scrollTo({ top: targetY, behavior: 'instant' })
-              window.history.replaceState(null, '', window.location.pathname)
-              return
-            }
-          }
-
-          // Fallback for non-pinned sections
-          scrollToSectionRef.current(hash, true)
-          window.history.replaceState(null, '', window.location.pathname)
-        })
-      })
-    }, 200)
-
-    return () => clearTimeout(timer)
-  }, [preloaderDone])
-
-  const handleMenuNavigation = (id: string) => {
-    if (id === 'contact') {
-      router.push('/contact')
-    } else {
-      scrollToSection(id)
-    }
-  }
-
   return (
     <div
       ref={mainContainer}
@@ -572,11 +411,7 @@ export default function Home() {
     >
       <PreLoad onComplete={() => setPreloaderDone(true)} />
 
-      <Menu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onNavigate={handleMenuNavigation}
-      />
+      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <NavBar
         itemsRef={navItemsRef}
@@ -584,7 +419,6 @@ export default function Home() {
         navContainerRef={navContainerRef}
         onBurgerClick={() => setIsMenuOpen(!isMenuOpen)}
         isOpen={isMenuOpen}
-        onNavigate={scrollToSection}
       />
 
       <div ref={heroRef}>
@@ -603,11 +437,7 @@ export default function Home() {
 
       <FinalCTA ref={FinalCtaRef} />
 
-      <Footer
-        ref={footerRef}
-        onScrollToTop={handleBackToTop}
-        onNavigate={scrollToSection}
-      />
+      <Footer ref={footerRef} onScrollToTop={handleBackToTop} />
     </div>
   )
 }

@@ -9,32 +9,23 @@ interface NavBarProps {
   navContainerRef: React.RefObject<HTMLDivElement>
   onBurgerClick?: () => void
   isOpen?: boolean
-  onNavigate: (id: string) => void
 }
 
 const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
-  ({
-    itemsRef,
-    burgerRef,
-    navContainerRef,
-    onBurgerClick,
-    isOpen,
-    onNavigate,
-  }) => {
+  ({ itemsRef, burgerRef, navContainerRef, onBurgerClick, isOpen }) => {
     const router = useRouter()
     const pathname = usePathname()
 
-    // Check if we are on the Home page
-    const isHome = pathname === '/'
-
-    const handleLinkClick = (e: React.MouseEvent, id: string) => {
-      e.preventDefault()
-      onNavigate(id)
+    const navigateTo = (path: string) => {
+      if (pathname === path) {
+        return
+      }
+      router.push(path)
     }
 
     const handleLogoClick = () => {
       if (pathname === '/') {
-        onNavigate('hero')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
         router.push('/')
       }
@@ -59,49 +50,28 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
           </div>
 
           <div ref={itemsRef} className="hidden items-center gap-14 md:flex">
-            {isHome ? (
-              /* ── HOME PATH LINKS ── */
-              <>
-                <button
-                  onClick={(e) => handleLinkClick(e, 'projects')}
-                  className="nav-link"
-                >
-                  solutions
-                </button>
-                <button
-                  onClick={(e) => handleLinkClick(e, 'about')}
-                  className="nav-link"
-                >
-                  about us
-                </button>
-                <button
-                  onClick={(e) => handleLinkClick(e, 'team')}
-                  className="nav-link"
-                >
-                  team
-                </button>
-              </>
-            ) : (
-              /* ── OTHER PAGES LINKS ── */
-              <>
-                <button
-                  onClick={() => router.push('/projects')}
-                  className="nav-link"
-                >
-                  projects
-                </button>
-                <button
-                  onClick={() => router.push('/terms')}
-                  className="nav-link"
-                >
-                  terms
-                </button>
-              </>
-            )}
+            <button
+              onClick={() => navigateTo('/projects')}
+              className={`nav-link ${pathname === '/projects' ? 'active-link' : ''}`}
+            >
+              solutions
+            </button>
+            <button
+              onClick={() => navigateTo('/about')}
+              className={`nav-link ${pathname === '/about' ? 'active-link' : ''}`}
+            >
+              about us
+            </button>
+            <button
+              onClick={() => navigateTo('/services')}
+              className={`nav-link ${pathname === '/services' ? 'active-link' : ''}`}
+            >
+              services
+            </button>
 
             {/* Always show Contact CTA */}
             <button
-              onClick={() => router.push('/contact')}
+              onClick={() => navigateTo('/contact')}
               className="nav-contact"
             >
               contactez-nous

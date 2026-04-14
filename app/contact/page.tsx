@@ -5,8 +5,6 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import Footer from '@/components/sections/footer'
 import NavBar from '@/components/layout/navbar'
-import { useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/all'
 import Menu from '@/components/layout/menu'
@@ -37,9 +35,6 @@ const SOCIAL_LINKS = [
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
 const ContactPage = () => {
-  const router = useRouter()
-  const pathname = usePathname()
-
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -47,36 +42,6 @@ const ContactPage = () => {
   const navBurgerRef = useRef<HTMLDivElement>(null)
   const navContainerRef = useRef<HTMLDivElement>(null)
   const footerRef = useRef<HTMLElement>(null)
-
-  //  Navigation Logic
-  const handleNavigate = (id: string) => {
-    if (pathname === '/contact' && (id === 'contact' || id === 'hero')) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else {
-      router.push(`/#${id}`)
-    }
-  }
-
-  const handleMenuNavigation = (id: string) => {
-    setIsMenuOpen(false)
-
-    if (id === 'hero' || id === 'home') {
-      router.push('/')
-      return
-    }
-
-    const pages = ['projects', 'contact', 'terms']
-
-    if (pages.includes(id)) {
-      router.push(`/${id}`)
-    } else {
-      if (pathname === '/') {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-      } else {
-        router.push(`/#${id}`)
-      }
-    }
-  }
 
   useGSAP(
     () => {
@@ -119,18 +84,13 @@ const ContactPage = () => {
       ref={containerRef}
       className="bg-primary-950 text-white selection:bg-[#20d76c] selection:text-primary-950"
     >
-      <Menu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onNavigate={handleMenuNavigation}
-      />
+      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       <NavBar
         itemsRef={navItemsRef}
         burgerRef={navBurgerRef}
         navContainerRef={navContainerRef}
         onBurgerClick={() => setIsMenuOpen(!isMenuOpen)}
         isOpen={isMenuOpen}
-        onNavigate={handleNavigate}
       />
 
       {/*HEADER */}
@@ -245,7 +205,6 @@ const ContactPage = () => {
       {/* FOOTER */}
       <Footer
         ref={footerRef}
-        onNavigate={handleNavigate}
         onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       />
     </div>

@@ -13,7 +13,6 @@ if (typeof window !== 'undefined') {
 
 interface FooterProps {
   onScrollToTop?: () => void
-  onNavigate: (id: string) => void
 }
 
 const SOCIAL_LINKS = [
@@ -39,8 +38,21 @@ const SOCIAL_LINKS = [
   },
 ]
 
+const PRIMARY_NAV = [
+  { label: 'Accueil', path: '/' },
+  { label: 'About', path: '/about' },
+  { label: 'Solutions', path: '/projects' },
+  { label: 'Services', path: '/services' },
+]
+
+const SECONDARY_NAV = [
+  { label: 'Contact', path: '/contact' },
+  { label: 'Privacy', path: '/privacy' },
+  { label: 'Terms', path: '/terms' },
+]
+
 const Footer = forwardRef<HTMLElement, FooterProps>(
-  ({ onScrollToTop, onNavigate }, ref) => {
+  ({ onScrollToTop }, ref) => {
     const titleRef = useRef<HTMLDivElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const bottomRef = useRef<HTMLDivElement>(null)
@@ -49,37 +61,12 @@ const Footer = forwardRef<HTMLElement, FooterProps>(
     const pathname = usePathname()
     const router = useRouter()
 
-    const isHome = pathname === '/'
-
-    const handleAccueilClick = () => {
-      if (isHome) {
-        return
-      } else {
-        router.push('/')
-      }
-    }
-
-    const navMap: Record<string, string> = {
-      Accueil: 'hero',
-      About: 'about',
-      'Nos Projets': 'projects',
-      Services: 'services',
-      Team: 'team',
-    }
-
-    const handleSecondaryNav = (item: string) => {
-      if (item === 'Email') {
-        window.location.href = 'mailto:contact@edggroupe.com'
+    const handleNav = (path: string) => {
+      if (pathname === path) {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         return
       }
-
-      const targetPath = `/${item.toLowerCase()}`
-
-      if (pathname === targetPath) {
-        return
-      }
-
-      router.push(targetPath)
+      router.push(path)
     }
 
     useGSAP(() => {
@@ -162,34 +149,25 @@ const Footer = forwardRef<HTMLElement, FooterProps>(
             {/* Nav Links */}
             <div className="flex gap-12 md:gap-[5vw] lg:gap-[8vw]">
               <ul className="flex flex-col gap-4 font-sans text-base font-semibold uppercase text-white/70 md:text-lg">
-                {['Accueil', 'About', 'Nos Projets', 'Services'].map((item) => (
-                  <li key={item}>
+                {PRIMARY_NAV.map((item) => (
+                  <li key={item.path}>
                     <button
-                      onClick={() => {
-                        if (item === 'Accueil') {
-                          handleAccueilClick()
-                        } else if (isHome) {
-                          onNavigate(navMap[item]) // Internal scroll if already home
-                        } else {
-                          // Navigate home with a hash (e.g., /#services)
-                          router.push(`/#${navMap[item]}`)
-                        }
-                      }}
-                      className="text-left transition-colors hover:text-[#20d76c]"
+                      onClick={() => handleNav(item.path)}
+                      className={`text-left transition-colors hover:text-[#20d76c] ${pathname === item.path ? 'text-[#20d76c]' : ''}`}
                     >
-                      {item}
+                      {item.label}
                     </button>
                   </li>
                 ))}
               </ul>
               <ul className="flex flex-col gap-4 font-sans text-base font-semibold uppercase text-white/70 md:text-lg">
-                {['Contact', 'Privacy', 'Terms', 'Email'].map((item) => (
-                  <li key={item}>
+                {SECONDARY_NAV.map((item) => (
+                  <li key={item.path}>
                     <button
-                      onClick={() => handleSecondaryNav(item)}
-                      className="text-left transition-colors hover:text-[#20d76c]"
+                      onClick={() => handleNav(item.path)}
+                      className={`text-left transition-colors hover:text-[#20d76c] ${pathname === item.path ? 'text-[#20d76c]' : ''}`}
                     >
-                      {item}
+                      {item.label}
                     </button>
                   </li>
                 ))}

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import { usePathname, useRouter } from 'next/navigation'
+
 import Footer from '@/components/sections/footer'
 import NavBar from '@/components/layout/navbar'
 import Menu from '@/components/layout/menu'
@@ -137,38 +137,6 @@ export default function ProjectsPage() {
   const navItemsRef = useRef<HTMLDivElement>(null)
   const navContainerRef = useRef<HTMLDivElement>(null)
 
-  const router = useRouter()
-  const pathname = usePathname()
-
-  const handleNavigate = (id: string) => {
-    if (pathname === '/contact' && (id === 'contact' || id === 'hero')) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else {
-      router.push(`/#${id}`)
-    }
-  }
-
-  const handleMenuNavigation = (id: string) => {
-    setIsMenuOpen(false)
-
-    if (id === 'hero' || id === 'home') {
-      router.push('/')
-      return
-    }
-
-    const pages = ['projects', 'contact', 'terms']
-
-    if (pages.includes(id)) {
-      router.push(`/${id}`)
-    } else {
-      if (pathname === '/') {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-      } else {
-        router.push(`/#${id}`)
-      }
-    }
-  }
-
   useGSAP(
     () => {
       const tl = gsap.timeline({
@@ -216,16 +184,11 @@ export default function ProjectsPage() {
       ref={containerRef}
       className="min-h-screen bg-primary text-white selection:bg-[#20d76c] selection:text-[#0F0E0D]"
     >
-      <Menu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onNavigate={handleMenuNavigation}
-      />
+      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <NavBar
         itemsRef={navItemsRef}
         navContainerRef={navContainerRef}
-        onNavigate={handleNavigate}
         isOpen={isMenuOpen}
         onBurgerClick={() => setIsMenuOpen((prev) => !prev)}
       />
@@ -359,7 +322,6 @@ export default function ProjectsPage() {
 
       <Footer
         ref={footerRef}
-        onNavigate={handleNavigate}
         onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       />
     </div>
