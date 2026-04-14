@@ -541,7 +541,7 @@ export default function AboutPage() {
           Prêt à construire quelque chose ?
         </p>
         <h2
-          className="mt-6 font-display uppercase leading-none tracking-tighter"
+          className="mt-6 font-display uppercase leading-none tracking-tight"
           style={{ fontSize: 'clamp(3rem, 10vw, 9rem)', fontWeight: 900 }}
         >
           Travaillons <br />
