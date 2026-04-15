@@ -30,7 +30,6 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
   const router = useTransitionRouter()
 
   useEffect(() => {
-    router.push('/')
     router.prefetch('/projects')
     router.prefetch('/about')
     router.prefetch('/services')
