@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { usePathname } from 'next/navigation'
@@ -28,6 +28,14 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
   const linksRef = useRef<HTMLDivElement[]>([])
   const pathname = usePathname()
   const router = useTransitionRouter()
+
+  useEffect(() => {
+    router.push('/')
+    router.prefetch('/projects')
+    router.prefetch('/about')
+    router.prefetch('/services')
+    router.prefetch('/contact')
+  }, [])
 
   useGSAP(
     () => {
@@ -85,13 +93,13 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
         {NAV_LINKS.map((link, i) => (
           <div
             key={link.label}
-            className="group w-full overflow-hidden px-8 py-1"
+            className="group w-full overflow-hidden px-8 py-2"
           >
             <div
               ref={(el) => {
                 if (el) linksRef.current[i] = el
               }}
-              className="relative"
+              className="overflow-hidden-x relative"
             >
               <button
                 onClick={() => handleLinkClick(link.path)}
@@ -103,7 +111,7 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
                 </span>
 
                 {/* LAYER 2: Hover Text */}
-                <span className="absolute inset-0 block translate-y-full italic text-[#20d76c] transition-transform duration-500 ease-[0.76,0,0.24,1] group-hover:translate-y-0">
+                <span className="absolute inset-0 block translate-y-[110%] italic text-[#20d76c] transition-transform duration-500 ease-[0.76,0,0.24,1] group-hover:translate-y-0">
                   {link.label}
                 </span>
               </button>
