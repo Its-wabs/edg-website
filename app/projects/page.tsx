@@ -281,7 +281,7 @@ export default function ProjectsPage() {
       {/*  ARCHIVE LIST */}
       <section
         ref={archiveRef}
-        className="mx-auto mt-48 h-full max-w-[1400px] px-6 pb-40 md:px-20"
+        className="mx-auto mt-48 h-full max-w-full px-6 pb-40 md:max-w-[80vw] md:px-20"
       >
         <div className="flex items-end justify-between gap-8 p-6 pb-8 md:gap-0 md:p-8">
           <h2 className="font-display text-3xl uppercase text-white/85 md:text-6xl">
@@ -298,19 +298,19 @@ export default function ProjectsPage() {
           <div
             key={i}
             onClick={() => window.open(item.url, '_blank')}
-            className="group flex w-full cursor-pointer flex-col gap-4 border-b border-white/10 p-6  transition-colors hover:bg-white/[0.03] md:gap-0"
+            className="group  flex w-full cursor-pointer flex-col items-center justify-center gap-10 border-b border-white/10 p-6  transition-colors hover:bg-white/[0.03] md:gap-0"
           >
-            <div className="flex w-full items-center justify-between p-8">
-              <span className="w-1/4 font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-[#20d76c]">
+            <div className="flex w-full flex-col items-center justify-center gap-6 p-8 md:flex-row md:justify-between md:gap-0">
+              <span className=" w-full whitespace-nowrap font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-[#20d76c] md:w-1/4">
                 {item.category}
               </span>
-              <span className="w-2/4 font-display text-lg uppercase tracking-tight text-white transition-transform duration-300 group-hover:translate-x-2 md:text-3xl">
+              <span className="w-full whitespace-nowrap font-display text-lg uppercase tracking-tight text-white transition-transform duration-300 group-hover:translate-x-2 md:w-2/4 md:text-3xl">
                 {item.client}
               </span>
-              <span className="hidden w-1/4 text-right font-sans text-[10px] uppercase tracking-[0.2em] text-white/40 md:inline">
+              <span className="hidden w-full text-right font-sans text-[10px] uppercase tracking-[0.2em] text-white/40 md:inline md:w-1/4">
                 {item.type}
               </span>
-              <span className="w-12 text-right font-sans text-[10px] uppercase tracking-[0.2em] text-white/40">
+              <span className="w-full text-right font-sans text-[10px] uppercase tracking-[0.2em] text-white/40 md:w-12">
                 {item.year}
               </span>
             </div>
