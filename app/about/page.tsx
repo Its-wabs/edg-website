@@ -421,7 +421,7 @@ export default function AboutPage() {
               key={member.name}
               className="group flex flex-col items-center gap-6"
             >
-              <div className="relative aspect-square overflow-hidden bg-white/5">
+              <div className="relative aspect-square w-[20vw] overflow-hidden bg-white/5">
                 <Image
                   src={member.image}
                   alt={member.name}

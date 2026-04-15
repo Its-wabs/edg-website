@@ -8,6 +8,20 @@ import NavBar from '@/components/layout/navbar'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/all'
 import Menu from '@/components/layout/menu'
+import { WhatsappLogoIcon } from '@phosphor-icons/react'
+
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+
+// ── Schema ────────────────────────────────────────────────
+const ContactSchema = z.object({
+  name: z.string().min(2, 'Nom trop court'),
+  email: z.string().email('Email invalide'),
+  message: z.string().min(10, 'Message trop court'),
+})
+
+type ContactFormData = z.infer<typeof ContactSchema>
 
 const SOCIAL_LINKS = [
   {
@@ -35,6 +49,44 @@ const SOCIAL_LINKS = [
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
 const ContactPage = () => {
+  // email related logic
+
+  const [status, setStatus] = useState<
+    'idle' | 'loading' | 'success' | 'error'
+  >('idle')
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(ContactSchema),
+  })
+
+  const onSubmit = async (data: ContactFormData) => {
+    setStatus('loading')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+          ...data,
+        }),
+      })
+      const json = await res.json()
+      if (json.success) {
+        setStatus('success')
+        reset()
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
+  }
+
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -126,6 +178,19 @@ const ContactPage = () => {
                 info@edggroupe.com
               </a>
             </div>
+            <div className="reveal-text">
+              <p className="font-sans text-xs uppercase tracking-widest text-white/40">
+                Direct Message
+              </p>
+              <a
+                href="https://wa.me/213676823182?text=Bonjour%20EDG%20Studio%2C%20j%27ai%20un%20projet%20%C3%A0%20discuter"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative mt-2 block w-fit font-display text-xl uppercase transition-colors hover:text-[#20d76c] md:text-2xl"
+              >
+                <WhatsappLogoIcon size={60} />
+              </a>
+            </div>
           </div>
 
           {/* RIGHT: HEADLINE */}
@@ -143,44 +208,83 @@ const ContactPage = () => {
       <section className="mt-24 px-6 md:px-20">
         <div className="reveal-line h-[1px] w-full bg-white/20" />
 
-        <form className="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2"
+        >
+          {/* Name */}
           <div className="group relative">
             <input
+              {...register('name')}
               type="text"
               className="w-full border-b border-white/20 bg-transparent py-4 font-display text-xl uppercase outline-none focus:border-[#20d76c]"
               placeholder="Votre nom"
             />
+            {errors.name && (
+              <p className="mt-1 text-xs text-red-400">{errors.name.message}</p>
+            )}
           </div>
+
+          {/* Email */}
           <div className="group relative">
             <input
+              {...register('email')}
               type="email"
               className="w-full border-b border-white/20 bg-transparent py-4 font-display text-xl uppercase outline-none focus:border-[#20d76c]"
               placeholder="email@exemple.com"
             />
+            {errors.email && (
+              <p className="mt-1 text-xs text-red-400">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
+          {/* Message */}
           <div className="group relative md:col-span-2">
             <textarea
+              {...register('message')}
               rows={4}
               className="w-full border-b border-white/20 bg-transparent py-4 font-display text-xl uppercase outline-none focus:border-[#20d76c]"
               placeholder="Décrivez vos besoins..."
             />
+            {errors.message && (
+              <p className="mt-1 text-xs text-red-400">
+                {errors.message.message}
+              </p>
+            )}
           </div>
 
           {/* CTA */}
           <div className="md:col-span-2">
-            <button className="group flex items-center gap-4 py-8 font-display text-4xl uppercase transition-colors hover:text-[#20d76c] md:text-6xl">
-              Envoyer
-              <svg
-                className="h-8 w-8 transition-transform group-hover:translate-x-4 md:h-12 md:w-12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+            <button
+              type="submit"
+              disabled={status === 'loading'}
+              className="group flex items-center gap-4 py-8 font-display text-4xl uppercase transition-colors hover:text-[#20d76c] disabled:opacity-40 md:text-6xl"
+            >
+              {status === 'loading'
+                ? 'Envoi...'
+                : status === 'success'
+                  ? 'Envoyé ✓'
+                  : 'Envoyer'}
+              {status !== 'success' && (
+                <svg
+                  className="h-8 w-8 transition-transform group-hover:translate-x-4 md:h-12 md:w-12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              )}
             </button>
+
+            {status === 'error' && (
+              <p className="text-sm text-red-400">
+                Une erreur est survenue. Réessayez.
+              </p>
+            )}
           </div>
         </form>
       </section>

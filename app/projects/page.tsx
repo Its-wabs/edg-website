@@ -219,7 +219,7 @@ export default function ProjectsPage() {
             <div
               key={item.id}
               onClick={() => window.open(item.url, '_blank')}
-              className="reveal-item group relative flex aspect-square cursor-pointer flex-col overflow-hidden bg-primary-950 p-6 transition-all duration-500  ease-in-out hover:bg-[#20d76c]"
+              className="reveal-item group relative flex aspect-square cursor-pointer flex-col overflow-hidden bg-primary-900 p-6 transition-all duration-500  ease-in-out hover:bg-[#20d76c]"
             >
               {/* BLURRED BACKGROUND */}
               <div className="pointer-events-none absolute inset-0 scale-150  opacity-0 blur-[80px] transition-opacity duration-700 md:opacity-65 md:group-hover:opacity-25">
@@ -283,11 +283,11 @@ export default function ProjectsPage() {
         ref={archiveRef}
         className="mx-auto mt-48 h-full max-w-[1400px] px-6 pb-40 md:px-20"
       >
-        <div className="flex items-end justify-between pb-8">
-          <h2 className="font-display text-4xl uppercase text-white/85 md:text-6xl">
+        <div className="flex items-end justify-between gap-8 p-6 pb-8 md:gap-0 md:p-8">
+          <h2 className="font-display text-3xl uppercase text-white/85 md:text-6xl">
             ARCHIVE
           </h2>
-          <span className="font-sans text-sm font-medium uppercase tracking-widest text-[#20d76c]">
+          <span className="font-sans text-xs font-medium uppercase tracking-widest text-[#20d76c] md:text-sm">
             Systems & Strategies / 2022-2026
           </span>
         </div>
@@ -298,7 +298,7 @@ export default function ProjectsPage() {
           <div
             key={i}
             onClick={() => window.open(item.url, '_blank')}
-            className="group flex w-full cursor-pointer flex-col border-b border-white/10 transition-colors hover:bg-white/[0.03]"
+            className="group flex w-full cursor-pointer flex-col gap-4 border-b border-white/10 p-6  transition-colors hover:bg-white/[0.03] md:gap-0"
           >
             <div className="flex w-full items-center justify-between p-8">
               <span className="w-1/4 font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-[#20d76c]">

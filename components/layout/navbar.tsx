@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { forwardRef } from 'react'
+import { forwardRef, useEffect } from 'react'
 
 import { useTransitionRouter } from 'next-view-transitions'
 
@@ -17,6 +17,13 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
   ({ itemsRef, burgerRef, navContainerRef, onBurgerClick, isOpen }) => {
     const pathname = usePathname()
     const router = useTransitionRouter()
+
+    useEffect(() => {
+      router.prefetch('/projects')
+      router.prefetch('/about')
+      router.prefetch('/services')
+      router.prefetch('/contact')
+    }, [])
 
     const navigateTo = (path: string) => {
       if (pathname === path) {

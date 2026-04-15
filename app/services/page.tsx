@@ -12,7 +12,7 @@ import Menu from '@/components/layout/menu'
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
-// DATA — edit content here, nothing else needs to change
+// DATA edit content here, nothing else needs to change
 
 const SERVICES = [
   {
@@ -303,7 +303,7 @@ export default function ServicesPage() {
                 <span className="font-sans text-xs font-bold uppercase tracking-[0.4em] text-accent-950">
                   {svc.category}
                 </span>
-                <h2 className="font-display text-[clamp(2.5rem,6vw,6rem)] font-black uppercase leading-[1.1] tracking-tight text-white">
+                <h2 className="font-display text-4xl font-black uppercase leading-[1.1] tracking-tight text-white md:text-[6rem]">
                   {svc.title}
                   <span className="text-[#20d76c]">.</span>
                 </h2>
