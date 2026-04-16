@@ -291,43 +291,30 @@ export default function Home() {
           // FINAL CTA SECTION
           if (FinalCtaRef.current && isDesktop) {
             setupFinalCTAanimation(FinalCtaRef, isDesktop)
-
-            ScrollTrigger.create({
-              trigger: FinalCtaRef.current,
-              start: 'top top',
-              end: '+=200%',
-              invalidateOnRefresh: true,
-              onEnter: () => navMorphTl.play(),
-              onEnterBack: () => {
-                toggleNavVisibility(true)
-                navMorphTl.play()
-              },
-              onLeave: () => toggleNavVisibility(false),
-              onLeaveBack: () => navMorphTl.reverse(),
-            })
-          } else {
-            gsap.set(navBurgerRef.current, { scale: 1, autoAlpha: 1 })
           }
 
-          // hide navbar on mobile when footer enters viewport
+          // hide navbar when we get to footer
 
-          const toggleNavVisibility = (show: boolean) => {
-            gsap.to(navContainerRef.current, {
-              autoAlpha: show ? 1 : 0,
-              y: show ? 0 : -50,
-              duration: 0.4,
-              ease: 'power2.inOut',
-              overwrite: 'auto',
-            })
-          }
-          if (!isDesktop && footerRef.current) {
-            ScrollTrigger.create({
-              trigger: footerRef.current,
-              start: 'top bottom',
-              onEnter: () => toggleNavVisibility(false),
-              onLeaveBack: () => toggleNavVisibility(true),
-            })
-          }
+          ScrollTrigger.create({
+            trigger: FinalCtaRef.current,
+            start: 'top -20',
+            onEnter: () => {
+              gsap.to(navContainerRef.current, {
+                y: -100,
+                autoAlpha: 0,
+                duration: 0.4,
+                ease: 'power2.inOut',
+              })
+            },
+            onLeaveBack: () => {
+              gsap.to(navContainerRef.current, {
+                y: 0,
+                autoAlpha: 1,
+                duration: 0.4,
+                ease: 'power2.out',
+              })
+            },
+          })
         }
       )
 
