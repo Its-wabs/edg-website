@@ -296,28 +296,28 @@ export default function Home() {
 
           // hide navbar when we get to footer
 
-          if (footerRef.current) {
-            ScrollTrigger.create({
-              trigger: footerRef.current,
-              start: 'top bottom-=100',
-              onEnter: () => {
-                gsap.to(navContainerRef.current, {
-                  y: -100,
-                  autoAlpha: 0,
-                  duration: 0.4,
-                  ease: 'power2.inOut',
-                })
-              },
-              onLeaveBack: () => {
-                gsap.to(navContainerRef.current, {
-                  y: 0,
-                  autoAlpha: 1,
-                  duration: 0.4,
-                  ease: 'power2.out',
-                })
-              },
-            })
-          }
+          ScrollTrigger.create({
+            trigger: mainContainer.current,
+            start: () => `bottom-=${window.innerHeight + 100} bottom`,
+            onEnter: () => {
+              gsap.to(navContainerRef.current, {
+                y: -100,
+                autoAlpha: 0,
+                duration: 0.4,
+                ease: 'power2.inOut',
+              })
+            },
+            onLeaveBack: () => {
+              gsap.to(navContainerRef.current, {
+                y: 0,
+                autoAlpha: 1,
+                duration: 0.4,
+                ease: 'power2.out',
+              })
+            },
+            invalidateOnRefresh: true,
+          })
+
           ScrollTrigger.refresh()
         }
       )
