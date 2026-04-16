@@ -9,6 +9,7 @@ import NavBar from '@/components/layout/navbar'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/all'
 import Menu from '@/components/layout/menu'
+import { useTransitionRouter } from 'next-view-transitions'
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
@@ -92,6 +93,8 @@ export default function AboutPage() {
   const descRef = useRef<HTMLDivElement>(null)
   // outro
   const outroRef = useRef<HTMLElement>(null)
+
+  const router = useTransitionRouter()
 
   const navigatePrinciple = (dir: 1 | -1) => {
     const next = (activeIndex + dir + PRINCIPLES.length) % PRINCIPLES.length
@@ -345,7 +348,7 @@ export default function AboutPage() {
             <div className="mb-3 font-sans text-xs uppercase tracking-[0.3em] text-white/30">
               {principle.sub}
             </div>
-            <h2 className="font-display text-[4rem] font-black uppercase leading-none tracking-tight text-white md:text-[9rem]">
+            <h2 className="font-display text-[3.5rem] font-black uppercase leading-none tracking-tight text-white md:text-[9rem]">
               {principle.title}
               <span className="text-[#20d76c]">.</span>
             </h2>
@@ -414,14 +417,14 @@ export default function AboutPage() {
           </h2>
         </div>
 
-        {/* Single member centred */}
+        {/* centered single member, it could be easily changed later to grid*/}
         <div className="reveal-up flex justify-center">
           {TEAM.map((member) => (
             <div
               key={member.name}
               className="group flex flex-col items-center gap-6"
             >
-              <div className="relative aspect-square w-[20vw] overflow-hidden bg-white/5">
+              <div className="relative aspect-square w-[70vw] overflow-hidden bg-white/5 md:w-[20vw]">
                 <Image
                   src={member.image}
                   alt={member.name}
@@ -448,16 +451,10 @@ export default function AboutPage() {
       {/* CLIENTS ACCORDION */}
       <section className="relative z-10 bg-primary-950 px-6 pb-32 md:px-20">
         <div className="reveal-up mb-16 flex items-end justify-between border-t border-white/10 pt-16">
-          <h2
-            className="font-display uppercase leading-none tracking-tighter"
-            style={{ fontSize: 'clamp(3rem, 8vw, 7rem)', fontWeight: 900 }}
-          >
+          <h2 className="whitespace-nowrap font-display text-[2.5rem] font-black uppercase leading-none tracking-tight md:text-[7rem]">
             Nos Clients
             <span className="text-[#20d76c]">.</span>
           </h2>
-          <span className="mb-2 font-mono text-xs uppercase tracking-[0.3em] text-white/30">
-            {CLIENTS.length} partners
-          </span>
         </div>
 
         <div className="reveal-up flex flex-col">
@@ -540,16 +537,13 @@ export default function AboutPage() {
         <p className="font-mono text-xs uppercase tracking-[0.4em] text-white/30">
           Prêt à construire quelque chose ?
         </p>
-        <h2
-          className="mt-6 font-display uppercase leading-none tracking-tight"
-          style={{ fontSize: 'clamp(3rem, 10vw, 9rem)', fontWeight: 900 }}
-        >
+        <h2 className="mt-6 font-display text-[3rem] font-black uppercase leading-none tracking-tight md:text-[9rem]">
           Travaillons <br />
           <span className="text-[#20d76c]">ensemble.</span>
         </h2>
         <a
-          href="/contact"
-          className="group mt-12 flex items-center gap-4 border-b border-white/20 pb-2 font-sans text-lg font-medium text-white transition-all duration-300 hover:border-[#20d76c] hover:text-[#20d76c]"
+          onClick={() => router.push('/contact')}
+          className="group mt-12 flex cursor-pointer items-center gap-4 border-b border-white/20 pb-2 font-sans text-lg font-medium text-white transition-all duration-300 hover:border-[#20d76c] hover:text-[#20d76c]"
         >
           Démarrer un projet
           <span className="transition-transform duration-300 group-hover:translate-x-2">

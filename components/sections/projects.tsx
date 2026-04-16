@@ -2,7 +2,7 @@
 
 import { useRef, forwardRef, useImperativeHandle } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useTransitionRouter } from 'next-view-transitions'
 
 const PROJECTS = [
   {
@@ -47,7 +47,7 @@ const Projects = forwardRef((_, ref) => {
   const itemsRef = useRef<(HTMLDivElement | null)[]>([])
   const btnRef = useRef<HTMLButtonElement>(null)
 
-  const router = useRouter()
+  const router = useTransitionRouter()
 
   useImperativeHandle(ref, () => ({
     section: sectionRef.current,

@@ -7,7 +7,7 @@ import { useGSAP } from '@gsap/react'
 import HeroProjects from '../ui/hero-projects'
 import ShowcaseGrid from '../ui/ShowcaseGrid'
 import HeroProjectsMobile from '../ui/mobile-hero-projects'
-import { useRouter } from 'next/navigation'
+import { useTransitionRouter } from 'next-view-transitions'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -22,7 +22,7 @@ const Hero = () => {
 
   const [isMobile, setIsMobile] = useState(false)
 
-  const router = useRouter()
+  const router = useTransitionRouter()
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)

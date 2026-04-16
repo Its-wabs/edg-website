@@ -85,7 +85,7 @@ const Testimonials = forwardRef((_, ref) => {
               key={testimonial.id}
               className="testimonial-item relative flex flex-col gap-2 md:gap-4"
             >
-              <div className="absolute bottom-10 left-0 -z-10 aspect-video w-full overflow-hidden bg-neutral-800 md:bottom-24 md:left-20 md:w-[70%]">
+              <div className="absolute bottom-10 left-0 -z-10 hidden aspect-video w-full overflow-hidden bg-neutral-800 md:bottom-24 md:left-20 md:inline-block md:w-[70%]">
                 <Image
                   src={testimonial.image}
                   alt={testimonial.title}
@@ -115,7 +115,7 @@ const Testimonials = forwardRef((_, ref) => {
               key={testimonial.id}
               className="testimonial-item relative flex flex-col gap-2 md:gap-4"
             >
-              <div className="absolute -left-10 bottom-10 -z-10 aspect-video w-full overflow-hidden bg-neutral-800 md:-left-48 md:bottom-24 md:w-[70%]">
+              <div className="absolute -left-10 bottom-10 -z-10 hidden aspect-video w-full overflow-hidden bg-neutral-800 md:-left-48 md:bottom-24 md:inline-block md:w-[70%]">
                 <Image
                   src={testimonial.image}
                   alt={testimonial.title}

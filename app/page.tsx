@@ -70,6 +70,37 @@ export default function Home() {
         (context) => {
           const { isDesktop } = context.conditions as any
 
+          gsap.set(navContainerRef.current, {
+            autoAlpha: 1,
+            y: 0,
+            clearProps: 'none',
+          })
+
+          gsap.set(navBurgerRef.current, { scale: 0, autoAlpha: 0 })
+          gsap.set(navItemsRef.current, {
+            x: 0,
+            autoAlpha: 1,
+            pointerEvents: 'auto',
+          })
+
+          const navMorphTl = gsap.timeline({ paused: true })
+          navMorphTl
+            .to(navItemsRef.current, {
+              x: 30,
+              autoAlpha: 0,
+              pointerEvents: 'none',
+              duration: 0.4,
+              ease: 'power2.in',
+            })
+            .to(
+              navBurgerRef.current,
+              { scale: 1, autoAlpha: 1, duration: 0.4, ease: 'back.out(1.7)' },
+              '-=0.2'
+            )
+
+          heroNavTl.current = navMorphTl
+          ctaNavTl.current = navMorphTl
+
           if (projectsRef.current) {
             const cards = projectsRef.current.items
             const projectSection = projectsRef.current.section
@@ -142,31 +173,6 @@ export default function Home() {
           }
 
           if (isDesktop && heroRef.current) {
-            gsap.set(navBurgerRef.current, { scale: 0, autoAlpha: 0 })
-
-            const navMorphTl = gsap.timeline({ paused: true })
-
-            navMorphTl
-              .to(navItemsRef.current, {
-                x: 30,
-                autoAlpha: 0,
-                pointerEvents: 'none',
-                duration: 0.4,
-                ease: 'power2.in',
-              })
-              .to(
-                navBurgerRef.current,
-                {
-                  scale: 1,
-                  autoAlpha: 1,
-                  duration: 0.4,
-                  ease: 'back.out(1.7)',
-                },
-                '-=0.2'
-              )
-
-            heroNavTl.current = navMorphTl
-
             ScrollTrigger.create({
               trigger: heroRef.current,
               start: 'top top',
@@ -285,29 +291,6 @@ export default function Home() {
           }
 
           if (isDesktop && FinalCtaRef.current) {
-            gsap.set(navBurgerRef.current, { scale: 0, autoAlpha: 0 })
-
-            const navMorphTl = gsap.timeline({ paused: true })
-
-            navMorphTl
-              .to(navItemsRef.current, {
-                x: 30,
-                autoAlpha: 0,
-                pointerEvents: 'none',
-                duration: 0.4,
-                ease: 'power2.in',
-              })
-              .to(
-                navBurgerRef.current,
-                {
-                  scale: 1,
-                  autoAlpha: 1,
-                  duration: 0.4,
-                  ease: 'back.out(1.7)',
-                },
-                '-=0.2'
-              )
-            ctaNavTl.current = navMorphTl
             ScrollTrigger.create({
               trigger: FinalCtaRef.current,
               start: 'top top',
