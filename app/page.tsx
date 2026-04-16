@@ -195,8 +195,6 @@ export default function Home() {
                 navMorphTl.play()
               },
             })
-          } else {
-            gsap.set(navBurgerRef.current, { scale: 1, autoAlpha: 1 })
           }
 
           // SERVICES SECTION
@@ -315,6 +313,8 @@ export default function Home() {
               })
             },
           })
+
+          ScrollTrigger.refresh()
         }
       )
 
