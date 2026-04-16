@@ -173,6 +173,7 @@ export default function Home() {
           }
 
           if (isDesktop && heroRef.current) {
+            heroNavTl.current = navMorphTl
             ScrollTrigger.create({
               trigger: heroRef.current,
               start: 'top top',
@@ -291,6 +292,8 @@ export default function Home() {
           }
 
           if (isDesktop && FinalCtaRef.current) {
+            ctaNavTl.current = navMorphTl
+
             ScrollTrigger.create({
               trigger: FinalCtaRef.current,
               start: 'top top',
