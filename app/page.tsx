@@ -292,30 +292,6 @@ export default function Home() {
           }
 
           // hide navbar when we get to footer
-
-          ScrollTrigger.create({
-            trigger: FinalCtaRef.current,
-            start: 'top -20',
-            refreshPriority: -1,
-            onEnter: () => {
-              gsap.to(navContainerRef.current, {
-                y: -100,
-                autoAlpha: 0,
-                duration: 0.4,
-                ease: 'power2.inOut',
-              })
-            },
-            onLeaveBack: () => {
-              gsap.to(navContainerRef.current, {
-                y: 0,
-                autoAlpha: 1,
-                duration: 0.4,
-                ease: 'power2.out',
-              })
-            },
-          })
-
-          ScrollTrigger.refresh()
         }
       )
 
