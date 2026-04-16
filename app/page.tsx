@@ -49,6 +49,13 @@ export default function Home() {
     // Lock scroll if preloader is active OR menu is open
     document.body.style.overflow =
       preloaderDone && !isMenuOpen ? 'auto' : 'hidden'
+
+    if (preloaderDone) {
+      let refreshTimeout = setTimeout(() => {
+        ScrollTrigger.refresh()
+      }, 200)
+      return () => clearTimeout(refreshTimeout)
+    }
   }, [preloaderDone, isMenuOpen])
 
   const { contextSafe } = useGSAP(
@@ -291,39 +298,19 @@ export default function Home() {
           // FINAL CTA SECTION
           if (FinalCtaRef.current && isDesktop) {
             setupFinalCTAanimation(FinalCtaRef, isDesktop)
-          }
 
-          if (isDesktop && FinalCtaRef.current) {
             ScrollTrigger.create({
               trigger: FinalCtaRef.current,
               start: 'top top',
-
               end: '+=200%',
               invalidateOnRefresh: true,
-              onUpdate: (self) => {
-                if (self.progress > 0.01 && self.progress < 0.8) {
-                  navMorphTl.play()
-                } else if (self.progress <= 0.01) {
-                  navMorphTl.reverse()
-                }
-              },
-              onLeave: () => {
-                gsap.to(navContainerRef.current, {
-                  autoAlpha: 0,
-                  y: -50,
-                  duration: 0.4,
-                  ease: 'power2.inOut',
-                  overwrite: 'auto',
-                })
-              },
+              onEnter: () => navMorphTl.play(),
               onEnterBack: () => {
-                gsap.to(navContainerRef.current, {
-                  autoAlpha: 1,
-                  y: 0,
-                  duration: 0.3,
-                  overwrite: 'auto',
-                })
+                toggleNavVisibility(true)
+                navMorphTl.play()
               },
+              onLeave: () => toggleNavVisibility(false),
+              onLeaveBack: () => navMorphTl.reverse(),
             })
           } else {
             gsap.set(navBurgerRef.current, { scale: 1, autoAlpha: 1 })
@@ -340,7 +327,7 @@ export default function Home() {
               overwrite: 'auto',
             })
           }
-          if (footerRef.current) {
+          if (!isDesktop && footerRef.current) {
             ScrollTrigger.create({
               trigger: footerRef.current,
               start: 'top bottom',
