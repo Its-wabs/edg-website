@@ -42,7 +42,6 @@ export default function Home() {
   const navItemsRef = useRef<HTMLDivElement>(null)
   const navBurgerRef = useRef<HTMLDivElement>(null)
   const navContainerRef = useRef<HTMLDivElement>(null)
-  const logoRef = useRef<HTMLDivElement>(null)
   const navTl = useRef<gsap.core.Timeline | null>(null)
 
   useEffect(() => {
@@ -88,7 +87,10 @@ export default function Home() {
             gsap.set(navItemsRef.current, { autoAlpha: 0, display: 'none' })
           }
 
-          const navMorphTl = gsap.timeline({ paused: true })
+          const navMorphTl = gsap.timeline({
+            paused: true,
+            defaults: { overwrite: 'auto' },
+          })
           navMorphTl
             .to(navItemsRef.current, {
               x: 30,
@@ -294,39 +296,28 @@ export default function Home() {
 
           // hide navbar when we get to footer
 
-          ScrollTrigger.create({
-            trigger: FinalCtaRef.current,
-            start: 'top -20',
-            onEnter: () => {
-              gsap.to(navItemsRef.current, {
-                x: 100,
-                autoAlpha: 0,
-                duration: 0.4,
-                ease: 'power2.inOut',
-              })
-              gsap.to(logoRef.current, {
-                x: -100,
-                autoAlpha: 0,
-                duration: 0.4,
-                ease: 'power2.inOut',
-              })
-            },
-            onLeaveBack: () => {
-              gsap.to(navItemsRef.current, {
-                x: 0,
-                autoAlpha: 1,
-                duration: 0.4,
-                ease: 'power2.out',
-              })
-              gsap.to(logoRef.current, {
-                x: 0,
-                autoAlpha: 1,
-                duration: 0.4,
-                ease: 'power2.out',
-              })
-            },
-          })
-
+          if (footerRef.current) {
+            ScrollTrigger.create({
+              trigger: footerRef.current,
+              start: 'top bottom-=100',
+              onEnter: () => {
+                gsap.to(navContainerRef.current, {
+                  y: -100,
+                  autoAlpha: 0,
+                  duration: 0.4,
+                  ease: 'power2.inOut',
+                })
+              },
+              onLeaveBack: () => {
+                gsap.to(navContainerRef.current, {
+                  y: 0,
+                  autoAlpha: 1,
+                  duration: 0.4,
+                  ease: 'power2.out',
+                })
+              },
+            })
+          }
           ScrollTrigger.refresh()
         }
       )
@@ -377,7 +368,6 @@ export default function Home() {
         navContainerRef={navContainerRef}
         onBurgerClick={() => setIsMenuOpen(!isMenuOpen)}
         isOpen={isMenuOpen}
-        logoRef={logoRef}
       />
 
       <div ref={heroRef}>

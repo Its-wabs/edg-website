@@ -8,21 +8,13 @@ import { useTransitionRouter } from 'next-view-transitions'
 interface NavBarProps {
   itemsRef?: React.RefObject<HTMLDivElement>
   burgerRef?: React.RefObject<HTMLDivElement>
-  logoRef?: React.RefObject<HTMLDivElement>
   navContainerRef: React.RefObject<HTMLDivElement>
   onBurgerClick?: () => void
   isOpen?: boolean
 }
 
 const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
-  ({
-    itemsRef,
-    burgerRef,
-    logoRef,
-    navContainerRef,
-    onBurgerClick,
-    isOpen,
-  }) => {
+  ({ itemsRef, burgerRef, navContainerRef, onBurgerClick, isOpen }) => {
     const pathname = usePathname()
     const router = useTransitionRouter()
 
@@ -61,7 +53,6 @@ const NavBar = forwardRef<HTMLDivElement, NavBarProps>(
       >
         <nav className="flex w-[90vw] items-center justify-between">
           <div
-            ref={logoRef}
             onClick={handleLogoClick}
             className="logo flex cursor-pointer items-center justify-center gap-1"
           >
