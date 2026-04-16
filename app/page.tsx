@@ -49,13 +49,6 @@ export default function Home() {
     // Lock scroll if preloader is active OR menu is open
     document.body.style.overflow =
       preloaderDone && !isMenuOpen ? 'auto' : 'hidden'
-
-    if (preloaderDone) {
-      let refreshTimeout = setTimeout(() => {
-        ScrollTrigger.refresh()
-      }, 200)
-      return () => clearTimeout(refreshTimeout)
-    }
   }, [preloaderDone, isMenuOpen])
 
   const { contextSafe } = useGSAP(

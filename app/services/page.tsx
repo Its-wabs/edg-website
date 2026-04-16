@@ -378,17 +378,11 @@ export default function ServicesPage() {
               key={stat.label}
               className="flex flex-col items-center justify-center gap-2"
             >
-              <span
-                className="font-display leading-none tracking-tight text-white"
-                style={{
-                  fontSize: 'clamp(2.5rem, 5vw, 5rem)',
-                  fontWeight: 900,
-                }}
-              >
+              <span className="font-display text-[2.5rem] font-black leading-none tracking-tight text-white md:text-[5rem]">
                 {stat.value}
                 <span className="text-[#20d76c]">.</span>
               </span>
-              <span className="font-sans text-xs uppercase tracking-widest text-white/30">
+              <span className="font-sans text-[10px] uppercase text-white/30  md:text-[15px]">
                 {stat.label}
               </span>
             </div>
