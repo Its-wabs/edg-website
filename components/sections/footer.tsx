@@ -98,7 +98,7 @@ const Footer = forwardRef<HTMLElement, FooterProps>(
     return (
       <footer
         ref={ref}
-        className="relative flex min-h-screen w-full flex-col items-center justify-between overflow-hidden bg-primary-950 py-[4vh]"
+        className="relative flex  min-h-screen w-full flex-col items-center justify-between overflow-hidden bg-primary-950 py-[4vh]"
       >
         <div className="flex w-full flex-grow flex-col items-center justify-between">
           {/* 1. MASSIVE LOGO  */}

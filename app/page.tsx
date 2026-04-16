@@ -293,32 +293,6 @@ export default function Home() {
           if (FinalCtaRef.current && isDesktop) {
             setupFinalCTAanimation(FinalCtaRef, isDesktop)
           }
-
-          // hide navbar when we get to footer
-
-          ScrollTrigger.create({
-            trigger: mainContainer.current,
-            start: () => `bottom-=${window.innerHeight + 100} bottom`,
-            onEnter: () => {
-              gsap.to(navContainerRef.current, {
-                y: -100,
-                autoAlpha: 0,
-                duration: 0.4,
-                ease: 'power2.inOut',
-              })
-            },
-            onLeaveBack: () => {
-              gsap.to(navContainerRef.current, {
-                y: 0,
-                autoAlpha: 1,
-                duration: 0.4,
-                ease: 'power2.out',
-              })
-            },
-            invalidateOnRefresh: true,
-          })
-
-          ScrollTrigger.refresh()
         }
       )
 
@@ -329,6 +303,26 @@ export default function Home() {
     },
     { scope: mainContainer, dependencies: [preloaderDone] }
   )
+
+  useEffect(() => {
+    if (!preloaderDone || !footerRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        gsap.to(navContainerRef.current, {
+          autoAlpha: entry.isIntersecting ? 0 : 1,
+          y: entry.isIntersecting ? -16 : 0,
+          duration: 0.35,
+          ease: 'power2.inOut',
+          overwrite: 'auto',
+        })
+      },
+      { threshold: 0.05 }
+    )
+
+    observer.observe(footerRef.current)
+    return () => observer.disconnect()
+  }, [preloaderDone])
 
   // back to top
 
