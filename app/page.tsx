@@ -296,6 +296,7 @@ export default function Home() {
           ScrollTrigger.create({
             trigger: FinalCtaRef.current,
             start: 'top -20',
+            refreshPriority: -1,
             onEnter: () => {
               gsap.to(navContainerRef.current, {
                 y: -100,
