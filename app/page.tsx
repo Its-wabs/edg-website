@@ -42,8 +42,7 @@ export default function Home() {
   const navItemsRef = useRef<HTMLDivElement>(null)
   const navBurgerRef = useRef<HTMLDivElement>(null)
   const navContainerRef = useRef<HTMLDivElement>(null)
-  const heroNavTl = useRef<gsap.core.Timeline | null>(null)
-  const ctaNavTl = useRef<gsap.core.Timeline | null>(null)
+  const navTl = useRef<gsap.core.Timeline | null>(null)
 
   useEffect(() => {
     window.history.scrollRestoration = 'manual'
@@ -83,6 +82,11 @@ export default function Home() {
             pointerEvents: 'auto',
           })
 
+          if (!isDesktop) {
+            gsap.set(navBurgerRef.current, { scale: 1, autoAlpha: 1 })
+            gsap.set(navItemsRef.current, { autoAlpha: 0, display: 'none' })
+          }
+
           const navMorphTl = gsap.timeline({ paused: true })
           navMorphTl
             .to(navItemsRef.current, {
@@ -98,8 +102,7 @@ export default function Home() {
               '-=0.2'
             )
 
-          heroNavTl.current = navMorphTl
-          ctaNavTl.current = navMorphTl
+          navTl.current = navMorphTl
 
           if (projectsRef.current) {
             const cards = projectsRef.current.items
@@ -173,7 +176,6 @@ export default function Home() {
           }
 
           if (isDesktop && heroRef.current) {
-            heroNavTl.current = navMorphTl
             ScrollTrigger.create({
               trigger: heroRef.current,
               start: 'top top',
@@ -292,8 +294,6 @@ export default function Home() {
           }
 
           if (isDesktop && FinalCtaRef.current) {
-            ctaNavTl.current = navMorphTl
-
             ScrollTrigger.create({
               trigger: FinalCtaRef.current,
               start: 'top top',
@@ -330,29 +330,22 @@ export default function Home() {
           }
 
           // hide navbar on mobile when footer enters viewport
-          if (!isDesktop && footerRef.current) {
+
+          const toggleNavVisibility = (show: boolean) => {
+            gsap.to(navContainerRef.current, {
+              autoAlpha: show ? 1 : 0,
+              y: show ? 0 : -50,
+              duration: 0.4,
+              ease: 'power2.inOut',
+              overwrite: 'auto',
+            })
+          }
+          if (footerRef.current) {
             ScrollTrigger.create({
               trigger: footerRef.current,
               start: 'top bottom',
-              invalidateOnRefresh: true,
-              onEnter: () => {
-                gsap.to(navContainerRef.current, {
-                  autoAlpha: 0,
-                  y: -50,
-                  duration: 0.4,
-                  ease: 'power2.inOut',
-                  overwrite: 'auto',
-                })
-              },
-              onLeaveBack: () => {
-                gsap.to(navContainerRef.current, {
-                  autoAlpha: 1,
-                  y: 0,
-                  duration: 0.3,
-                  ease: 'power2.out',
-                  overwrite: 'auto',
-                })
-              },
+              onEnter: () => toggleNavVisibility(false),
+              onLeaveBack: () => toggleNavVisibility(true),
             })
           }
         }
@@ -370,8 +363,7 @@ export default function Home() {
 
   const handleBackToTop = contextSafe(() => {
     //  Force the Navbar back to its "Start" state immediately
-    heroNavTl.current?.progress(0).pause()
-    ctaNavTl.current?.progress(0).pause()
+    navTl.current?.progress(0).pause()
 
     //  Ensure the container is visible
     gsap.set([navContainerRef.current, navItemsRef.current], {
